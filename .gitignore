@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+pnpm-lock.yaml
+
+# builds
+dist/
+build/
+.next/
+out/
+
+# local env
+.env*
+!.env.example
+
+# system
+.DS_Store
+Thumbs.db
+
+# tools
+.vscode/
+.idea/
+.turbo/
+.cache/
+coverage/
+playwright-report/
+
+# vercel
+.vercel/
+
+# supabase
+.supabase/
