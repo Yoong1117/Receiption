@@ -29,3 +29,6 @@ playwright-report/
 
 # supabase
 .supabase/
+
+# React Router auto-generated types
+.react-router/
