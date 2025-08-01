@@ -1,4 +1,9 @@
+// React
 import React, { useState } from "react";
+
+// React Router
+import type { Route } from "./+types/auth";
+import { useNavigate } from "react-router";
 
 // Framer motion
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,26 +24,70 @@ import { Label } from "~/components/ui/label";
 
 // React bits
 import InfiniteScroll from "../../react_bits/InfiniteScroll/InfiniteScroll";
+import { userAuth } from "~/context/AuthContext";
 
 const items = [
-  { content: "Food • RM52.50 • GrabPay" },
-  { content: "Electrical Bill • RM120.50 • CIMB Bank" },
-  { content: "Water Bill • RM45.20 • Maybank" },
-  { content: "Internet Bill • RM89.90 • Maybank" },
-  { content: "TV Subscription • RM39.99 • CIMB Bank" },
-  { content: "Gas Bill • RM62.30 • ShopeePay" },
-  { content: "Groceries • RM128.75 • Touch 'n Go" },
-  { content: "Ride • RM18.40 • GrabPay" },
-  { content: "Coffee • RM12.00 • Touch 'n Go" },
-  { content: "Movie Tickets • RM28.00 • CIMB Bank" },
-  { content: "Parking Fee • RM6.50 • Touch 'n Go" },
-  { content: "Online Shopping • RM220.99 • ShopeePay" },
-  { content: "Pharmacy • RM35.40 • GrabPay" },
+  { content: "Food • RM52.50" },
+  { content: "Electrical Bill • RM120.50" },
+  { content: "Water Bill • RM45.20" },
+  { content: "Internet Bill • RM89.90" },
+  { content: "TV Subscription • RM39.99" },
+  { content: "Gas Bill • RM62.30" },
+  { content: "Groceries • RM128.75" },
+  { content: "Ride • RM18.40" },
+  { content: "Coffee • RM12.00" },
+  { content: "Movie Tickets • RM28.00" },
+  { content: "Parking Fee • RM6.50" },
+  { content: "Online Shopping • RM220.99" },
+  { content: "Pharmacy • RM35.40" },
 ];
 
-export default function Login() {
+export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState<Boolean>();
 
+  const { signUpNewUser, loginUser } = userAuth();
+  const navigate = useNavigate();
+
+  // Handle sign up
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const result = await signUpNewUser(email, password, username);
+
+      if (result.success) {
+        window.location.reload();
+      }
+    } catch (err) {
+      setError("an error occured");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle login
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const result = await loginUser(email, password);
+
+      if (result.success) {
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setError("an error occured");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Card Animation
   const cardVariants = {
     initial: (direction: number) => ({
       x: direction > 0 ? 100 : -100,
@@ -52,6 +101,7 @@ export default function Login() {
     }),
   };
 
+  // Scroll Animation
   const scrollVariants = {
     initial: (direction: number) => ({
       x: direction > 0 ? -100 : 100,
@@ -88,7 +138,7 @@ export default function Login() {
                   exit="exit"
                   className="flex-1 flex justify-center"
                 >
-                  <Card className="w-full max-w-sm bg-white/90">
+                  <Card className="w-full max-w-sm bg-white/95">
                     <CardHeader>
                       <CardTitle>Join Receiption today</CardTitle>
                       <CardDescription>
@@ -103,8 +153,9 @@ export default function Login() {
                         </Button>
                       </CardAction>
                     </CardHeader>
-                    <CardContent>
-                      <form>
+                    <form onSubmit={handleSignUp}>
+                      <CardContent>
+                        <input type="hidden" name="action" value="signup" />
                         <div className="flex flex-col gap-6">
                           <div className="grid gap-2">
                             <Label htmlFor="name">Username</Label>
@@ -113,6 +164,8 @@ export default function Login() {
                               id="name"
                               type="text"
                               placeholder="John"
+                              value={username}
+                              onChange={(e) => setUsername(e.target.value)}
                               required
                             />
                           </div>
@@ -123,6 +176,8 @@ export default function Login() {
                               id="email"
                               type="email"
                               placeholder="John@example.com"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
                               required
                             />
                           </div>
@@ -133,6 +188,8 @@ export default function Login() {
                               id="password"
                               type="password"
                               placeholder="**********"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
                               required
                             />
                           </div>
@@ -141,19 +198,20 @@ export default function Login() {
                             <Input
                               className="border border-gray-400 focus:border-gray-600"
                               id="password2"
-                              type="password2"
+                              type="password"
                               placeholder="**********"
                               required
                             />
                           </div>
                         </div>
-                      </form>
-                    </CardContent>
-                    <CardFooter className="flex-col gap-2">
-                      <Button type="submit" className="w-full">
-                        Sign Up
-                      </Button>
-                    </CardFooter>
+                      </CardContent>
+
+                      <CardFooter className="flex-col gap-2 mt-4">
+                        <Button type="submit" className="w-full">
+                          Sign Up
+                        </Button>
+                      </CardFooter>
+                    </form>
                   </Card>
                 </motion.div>
 
@@ -215,7 +273,7 @@ export default function Login() {
                   exit="exit"
                   className="flex-1 flex justify-center"
                 >
-                  <Card className="w-full max-w-sm bg-white/90">
+                  <Card className="w-full max-w-sm bg-white/95">
                     <CardHeader>
                       <CardTitle>Welcome Back!</CardTitle>
                       <CardDescription>Login to your account</CardDescription>
@@ -228,8 +286,8 @@ export default function Login() {
                         </Button>
                       </CardAction>
                     </CardHeader>
-                    <CardContent>
-                      <form>
+                    <form onSubmit={handleLogin}>
+                      <CardContent>
                         <div className="flex flex-col gap-6">
                           <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
@@ -238,6 +296,8 @@ export default function Login() {
                               id="email"
                               type="email"
                               placeholder="John@example.com"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
                               required
                             />
                           </div>
@@ -248,22 +308,28 @@ export default function Login() {
                               id="password"
                               type="password"
                               placeholder="**********"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
                               required
                             />
                           </div>
                         </div>
-                      </form>
-                    </CardContent>
+                      </CardContent>
+                      <CardFooter className="flex-col gap-2 mt-4">
+                        <Button type="submit" className="w-full">
+                          Login
+                        </Button>
+
+                        <a
+                          href="#"
+                          className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                        >
+                          Forgot your password?
+                        </a>
+                      </CardFooter>
+                    </form>
+
                     <CardFooter className="flex-col gap-2">
-                      <a
-                        href="#"
-                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                      >
-                        Forgot your password?
-                      </a>
-                      <Button type="submit" className="w-full">
-                        Login
-                      </Button>
                       <Button variant="outline" className="w-full">
                         Login with Google
                       </Button>
