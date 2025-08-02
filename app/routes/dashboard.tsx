@@ -11,12 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 // Auth
 import { userAuth } from "~/context/AuthContext";
 import { useNavigate } from "react-router";
+import ProtectedRoute from "~/components/ProtectedRoute";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Dashboard" }];
 }
 
-export default function Dashboard() {
+function DashboardContent() {
   const { signOut } = userAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState<Boolean>();
@@ -107,5 +108,15 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <>
+      <ProtectedRoute>
+        <DashboardContent />
+      </ProtectedRoute>
+    </>
   );
 }

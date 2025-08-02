@@ -1,5 +1,5 @@
 // React
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // React Router
 import type { Route } from "./+types/auth";
@@ -9,6 +9,9 @@ import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 
 // UI Components
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -19,12 +22,15 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
+
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 
 // React bits
 import InfiniteScroll from "../../react_bits/InfiniteScroll/InfiniteScroll";
 import { userAuth } from "~/context/AuthContext";
+
+// Icon
+import { CircleX } from "lucide-react";
 
 const items = [
   { content: "Food • RM52.50" },
@@ -47,7 +53,8 @@ export default function Auth() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [error, setError] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState<string>();
+  const [error, setError] = useState<string[]>([]);
   const [loading, setLoading] = useState<Boolean>();
 
   const { signUpNewUser, loginUser } = userAuth();
@@ -57,14 +64,35 @@ export default function Auth() {
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    // Fresh array
+    const newErrors: string[] = [];
+
+    // Client-side validations first
+    if (!email.includes("@")) {
+      newErrors.push("- Email must contain '@'");
+    }
+    if (password !== confirmPassword) {
+      newErrors.push("- Passwords do not match");
+    }
+
     try {
       const result = await signUpNewUser(email, password, username);
 
-      if (result.success) {
+      if (!result.success) {
+        newErrors.push("- " + result.data || "- An error occurred");
+      }
+
+      if (newErrors.length > 0) {
+        setError(newErrors); // Combine messages into one string
+      } else {
+        setError([]);
         window.location.reload();
       }
     } catch (err) {
-      setError("an error occured");
+      newErrors.push("- A network or server error occurred");
+      setError(newErrors);
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -74,14 +102,23 @@ export default function Auth() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    // Fresh array
+    const newErrors: string[] = [];
+
     try {
       const result = await loginUser(email, password);
 
       if (result.success) {
+        setError([]);
         navigate("/dashboard");
+      } else {
+        setError([...newErrors, result.data]);
       }
     } catch (err) {
-      setError("an error occured");
+      newErrors.push("- A network or server error occurred");
+      setError(newErrors);
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -122,8 +159,8 @@ export default function Auth() {
 
       <div className="relative z-10 flex h-screen items-center justify-center w-full">
         <div
-          className="flex min-h-[600px] w-full max-w-[1000px] items-center justify-center gap-8 px-4
-             rounded-xl border border-gray-300/10 bg-white/10"
+          className="flex min-h-[650px] w-full max-w-[1000px] items-center justify-center gap-8 px-4
+             rounded-xl border border-gray-300/10 bg-white/7"
         >
           <AnimatePresence custom={isSignUp ? 1 : -1} mode="wait">
             {isSignUp ? (
@@ -138,7 +175,7 @@ export default function Auth() {
                   exit="exit"
                   className="flex-1 flex justify-center"
                 >
-                  <Card className="w-full max-w-sm bg-white/95">
+                  <Card className="w-full max-w-sm bg-white/99">
                     <CardHeader>
                       <CardTitle>Join Receiption today</CardTitle>
                       <CardDescription>
@@ -147,7 +184,10 @@ export default function Auth() {
                       <CardAction>
                         <Button
                           variant="link"
-                          onClick={() => setIsSignUp(false)}
+                          onClick={() => {
+                            setError([]);
+                            setIsSignUp(false);
+                          }}
                         >
                           Back to Login
                         </Button>
@@ -177,7 +217,14 @@ export default function Auth() {
                               type="email"
                               placeholder="John@example.com"
                               value={email}
-                              onChange={(e) => setEmail(e.target.value)}
+                              onChange={(e) => {
+                                setEmail(e.target.value);
+                                // if (error && e.target.validity.valid) setError("");
+                              }}
+                              onInvalid={(e) => {
+                                // e.preventDefault(); // Stop default browser tooltip
+                                // setError("Email must contain '@'");
+                              }}
                               required
                             />
                           </div>
@@ -200,14 +247,35 @@ export default function Auth() {
                               id="password2"
                               type="password"
                               placeholder="**********"
+                              onChange={(e) =>
+                                setConfirmPassword(e.target.value)
+                              }
                               required
                             />
                           </div>
                         </div>
                       </CardContent>
 
-                      <CardFooter className="flex-col gap-2 mt-4">
-                        <Button type="submit" className="w-full">
+                      <CardFooter className="flex-col gap-2">
+                        {error.length > 0 && isSignUp && (
+                          <Alert
+                            variant="destructive"
+                            className="bg-gray-100 border border-gray-500 mt-6"
+                          >
+                            <CircleX />
+                            <AlertTitle>Unable to sign up</AlertTitle>
+                            <AlertDescription>
+                              {error.map((err, idx) => (
+                                <div key={idx}>{err}</div>
+                              ))}
+                            </AlertDescription>
+                          </Alert>
+                        )}
+
+                        <Button
+                          type="submit"
+                          className={`w-full ${error ? "mt-4" : "mt-6"}`}
+                        >
                           Sign Up
                         </Button>
                       </CardFooter>
@@ -273,14 +341,17 @@ export default function Auth() {
                   exit="exit"
                   className="flex-1 flex justify-center"
                 >
-                  <Card className="w-full max-w-sm bg-white/95">
+                  <Card className="w-full max-w-sm bg-white/99">
                     <CardHeader>
                       <CardTitle>Welcome Back!</CardTitle>
                       <CardDescription>Login to your account</CardDescription>
                       <CardAction>
                         <Button
                           variant="link"
-                          onClick={() => setIsSignUp(true)}
+                          onClick={() => {
+                            setError([]);
+                            setIsSignUp(true);
+                          }}
                         >
                           Sign Up
                         </Button>
@@ -316,7 +387,25 @@ export default function Auth() {
                         </div>
                       </CardContent>
                       <CardFooter className="flex-col gap-2 mt-4">
-                        <Button type="submit" className="w-full">
+                        {error.length > 0 && !isSignUp && (
+                          <Alert
+                            variant="destructive"
+                            className="bg-gray-100 border border-gray-500"
+                          >
+                            <CircleX />
+                            <AlertTitle>Unable to Login</AlertTitle>
+                            <AlertDescription>
+                              {error.map((err, idx) => (
+                                <div key={idx}>{err}</div>
+                              ))}
+                            </AlertDescription>
+                          </Alert>
+                        )}
+
+                        <Button
+                          type="submit"
+                          className={`w-full ${error.length > 0 ? "mt-2" : "mt-4"}`}
+                        >
                           Login
                         </Button>
 
