@@ -12,6 +12,7 @@ import "./app.css";
 
 // Auth
 import { AuthContextProvider } from "./context/AuthContext";
+import { Toaster } from "./components/ui/sonner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -49,6 +50,7 @@ export default function App() {
     <>
       {" "}
       <AuthContextProvider>
+        <Toaster />
         <Outlet />
       </AuthContextProvider>
     </>

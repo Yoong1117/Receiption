@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 interface AuthContextType {
   session: any;
+  loading: boolean;
   setSession: React.Dispatch<React.SetStateAction<any>>;
   signUpNewUser: (
     email: string,
@@ -14,6 +15,7 @@ interface AuthContextType {
     email: string,
     password: string
   ) => Promise<{ success: boolean; data?: any }>;
+  signInWithGoogle: () => Promise<{ success: boolean; data?: any }>;
   signOut: () => Promise<{ success: boolean; data?: any }>;
 }
 
@@ -21,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<any>(undefined);
+  const [loading, setLoading] = useState(true);
 
   // Sign up
   const signUpNewUser = async (
@@ -60,14 +63,43 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     return { success: true, data };
   };
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+  // Google sign in
+  const signInWithGoogle = async (): Promise<{
+    success: boolean;
+    data?: any;
+  }> => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
     });
 
-    supabase.auth.onAuthStateChange((_event, session) => {
+    if (error) {
+      console.error("Google sign in failed: ", error);
+      return { success: false, data: error.message };
+    }
+
+    return { success: true, data };
+  };
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setLoading(false);
     });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    // Cleanup subscription
+    return () => subscription.unsubscribe();
   }, []);
 
   // Sign out
@@ -84,7 +116,15 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ session, setSession, signUpNewUser, loginUser, signOut }}
+      value={{
+        session,
+        loading,
+        setSession,
+        signUpNewUser,
+        loginUser,
+        signInWithGoogle,
+        signOut,
+      }}
     >
       {children}
     </AuthContext.Provider>
