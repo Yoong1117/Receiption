@@ -124,23 +124,17 @@ body {
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
 
+/* Autofill Fix */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: black !important; /* Make text visible */
+  caret-color: black; /* Caret also visible */
+  
+  /* Override background */
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
 
-@layer utilities {
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus {
-    @apply bg-transparent;
-    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
-    -webkit-text-fill-color: rgb(0, 0, 0) !important;
-    transition: background-color 9999s ease-in-out 0s;
-  }
 }

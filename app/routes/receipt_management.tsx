@@ -1,4 +1,4 @@
-import type { Route } from "./+types/login";
+import type { Route } from "./+types/receipt_management";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Receipt Management" }];

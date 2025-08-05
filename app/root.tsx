@@ -12,7 +12,11 @@ import "./app.css";
 
 // Auth
 import { AuthContextProvider } from "./context/AuthContext";
+
+// UI
 import { Toaster } from "./components/ui/sonner";
+import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
+import React from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -48,10 +52,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <>
-      {" "}
       <AuthContextProvider>
-        <Toaster />
-        <Outlet />
+        <SidebarProvider>
+          <Toaster />
+          <Outlet />
+        </SidebarProvider>
       </AuthContextProvider>
     </>
   );
