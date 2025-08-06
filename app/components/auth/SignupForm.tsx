@@ -59,28 +59,29 @@ export default function SignupForm({ onSwitch }: SignupFormProps) {
       <form onSubmit={handleSignUp}>
         <CardContent>
           <input type="hidden" name="action" value="signup" />
-          {/* Email input */}
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              className="border border-gray-400 focus:border-gray-600"
-              id="email"
-              type="email"
-              placeholder="John@example.com"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                // if (error && e.target.validity.valid) setError("");
-              }}
-              onInvalid={(e) => {
-                // e.preventDefault(); // Stop default browser tooltip
-                // setError("Email must contain '@'");
-              }}
-              required
-            />
-          </div>
-          {/* Username input */}
           <div className="flex flex-col gap-6">
+            {/* Email input */}
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                className="border border-gray-400 focus:border-gray-600"
+                id="email"
+                type="email"
+                placeholder="John@example.com"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  // if (error && e.target.validity.valid) setError("");
+                }}
+                onInvalid={(e) => {
+                  // e.preventDefault(); // Stop default browser tooltip
+                  // setError("Email must contain '@'");
+                }}
+                required
+              />
+            </div>
+            {/* Username input */}
+
             <div className="grid gap-2">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -122,12 +123,9 @@ export default function SignupForm({ onSwitch }: SignupFormProps) {
         </CardContent>
 
         {/* Error alert */}
-        <CardFooter className="flex-col gap-2">
+        <CardFooter className="flex-col gap-2 mt-4">
           {error.length > 0 && (
-            <Alert
-              variant="destructive"
-              className="bg-gray-100 border border-gray-500 mt-6"
-            >
+            <Alert variant="destructive" className="bg-transparent ">
               <CircleX />
               <AlertTitle>Unable to sign up</AlertTitle>
               <AlertDescription>
@@ -139,11 +137,7 @@ export default function SignupForm({ onSwitch }: SignupFormProps) {
           )}
 
           {/* Sign up */}
-          <Button
-            type="submit"
-            className={`w-full ${error ? "mt-4" : "mt-6"}`}
-            disabled={loading}
-          >
+          <Button type="submit" className="w-full mt-2" disabled={loading}>
             Sign Up
           </Button>
         </CardFooter>

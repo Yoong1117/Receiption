@@ -102,7 +102,7 @@ export default function LoginForm({ onSwitch }: LoginFormProps) {
 
             <Button
               type="submit"
-              className={`w-full ${error.length > 0 ? "mt-2" : "mt-4"}`}
+              className={`w-full cursor-pointer ${error.length > 0 ? "mt-2" : "mt-4"}`}
               disabled={loading}
             >
               Login
