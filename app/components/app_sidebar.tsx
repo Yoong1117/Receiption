@@ -38,7 +38,7 @@ import {
 } from "~/components/ui/collapsible";
 
 // React
-import { supabase } from "~/supabaseClient";
+import { supabase } from "~/supabase/supabaseClient";
 import { useEffect, useState } from "react";
 // Hook
 import { useSignOut } from "~/hooks/useSignOut";

@@ -67,6 +67,18 @@ function UploadReceiptContent() {
   const [showDropzone, setShowDropzone] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const uploadedFile = e.target.files[0];
+      setFile(uploadedFile);
+      console.log("Selected file:", uploadedFile);
+
+      // Trigger OCR automatically
+      runOCR(uploadedFile);
+    }
+    setShowDropzone(false);
+  };
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
@@ -74,22 +86,142 @@ function UploadReceiptContent() {
     if (files.length > 0) {
       const uploadedFile = files[0];
       setFile(uploadedFile);
+
+      // Trigger OCR automatically
+      runOCR(uploadedFile);
     }
     setShowDropzone(false);
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const uploadedFile = e.target.files[0];
-      setFile(uploadedFile);
-      console.log("Selected file:", uploadedFile);
+  const runOCR = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("/api/ocr", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const { rawText } = await response.json();
+      console.log("OCR Result:", rawText);
+
+      const parsed = parseReceipt(rawText);
+
+      if (parsed.vendor) setVendor(parsed.vendor);
+      if (parsed.date) setDate(formatDate(parsed.date)); // convert dd/mm/yyyy to yyyy-mm-dd
+      if (parsed.total) setAmount(parsed.total.toString());
+
+      console.log(
+        "Parsed Result: ",
+        parsed.vendor,
+        " Date: ",
+        parsed.date,
+        "Total: ",
+        parsed.total
+      );
+    } catch (error) {
+      console.error("OCR failed:", error);
     }
-    setShowDropzone(false);
   };
 
-  const handleSubmit = () => {
-    console.log({ file, vendor, date, amount, remark, selectedCategory });
-  };
+  // Remove symbols
+  //function cleanText(text: string) {
+  //  return (
+  //    text
+  // \s: any whitespace character
+  // +: one or more occurences
+  // g: global flag, replace all matches
+
+  // \x20 → space character (ASCII 32)
+  // \x7E → ~ character (ASCII 126)
+  // [^\x20-\x7E] → matches any character NOT in the printable ASCII range
+  // g → remove all occurrences
+  //      .replace(/\s+/g, " ")
+  //      .replace(/[^\x20-\x7E]/g, "")
+  //      .trim()
+  //  );
+  //}
+
+  function preprocess(text: string) {
+    return text
+      .replace(/\r/g, "")
+      .replace(/[^\x20-\x7E\n]/g, "") // keep only readable ASCII & line breaks
+      .replace(/\n{2,}/g, "\n") // merge multiple line breaks
+      .trim();
+  }
+
+  function extractVendor(text: string) {
+    const lines = text
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
+    const blacklist = [
+      "welcome",
+      "invoice",
+      "receipt",
+      "thank",
+      "sales",
+      "pos",
+      "staff",
+    ];
+    const firstFew = lines.slice(0, 6);
+
+    for (const line of firstFew) {
+      if (!blacklist.some((word) => line.toLowerCase().includes(word))) {
+        return line; // first non-generic line
+      }
+    }
+    return null;
+  }
+
+  function parseReceipt(ocrText: string) {
+    const text = preprocess(ocrText);
+
+    const dateMatch = text.match(
+      /\b(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})(?:\s+(\d{1,2}:\d{2}))?/
+    );
+
+    const totalMatch = text.match(
+      /(?:TOTAL|Amount|Grand\s*Total)[^\d]*(\d+\.\d{2})/i
+    );
+
+    const amountRegex = /\d+\.\d{2}/g;
+    const allAmounts = text.match(amountRegex)?.map(parseFloat) || [];
+    const maxAmount = allAmounts.length > 0 ? Math.max(...allAmounts) : null;
+
+    const isCash = /cash/i.test(text);
+
+    let total: number | null = null;
+    if (isCash && totalMatch) {
+      // If cash payment, rely on keyword total
+      total = parseFloat(totalMatch[1]);
+    } else {
+      // If not cash, pick the highest numeric value
+      total = maxAmount;
+    }
+
+    return {
+      vendor: extractVendor(text),
+      date: dateMatch?.[1] || null,
+      time: dateMatch?.[2] || null,
+      total: total,
+    };
+  }
+
+  function formatDate(dateStr: string) {
+    const parts = dateStr.split(/[\/\-]/);
+    if (parts.length === 3) {
+      // Assuming dd/mm/yyyy or dd-mm-yyyy
+      const [day, month, year] = parts;
+      return `${year.padStart(4, "20")}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
+    return dateStr;
+  }
 
   return (
     <div className="flex h-screen w-full overflow-hidden relative text-black bg-gray-100/10">
@@ -108,7 +240,7 @@ function UploadReceiptContent() {
           </div>
         </div>
 
-        <main className="flex p-6 pt-0 ">
+        <main className="flex flex-1 justify-center p-6 pt-0">
           <div className="flex flex-1 rounded-lg shadow border border-gray-400">
             {/* Receipt Preview */}
             <Card className="bg-gray-50 w-7/8 flex flex-col rounded-none border-r border-gray-200">
@@ -122,7 +254,7 @@ function UploadReceiptContent() {
                 <div
                   className={
                     file
-                      ? "w-80 h-auto flex items-center justify-center text-gray-500 rounded"
+                      ? "w-[270px] h-auto flex items-center justify-center text-gray-500 rounded"
                       : "w-80 h-[460px] border border-gray-400 bg-gray-100 flex items-center justify-center text-gray-500 rounded"
                   }
                 >
@@ -210,7 +342,9 @@ function UploadReceiptContent() {
               <CardContent className="flex-1 overflow-auto">
                 <form className="space-y-4">
                   <div className="grid gap-2 ">
-                    <Label htmlFor="vendor">Vendor</Label>
+                    <Label htmlFor="vendor">
+                      Vendor<span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="vendor"
                       className="w-[200px]"
@@ -283,7 +417,9 @@ function UploadReceiptContent() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="date">Date</Label>
+                    <Label htmlFor="date">
+                      Date<span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="date"
                       className="w-[200px]"
@@ -293,7 +429,9 @@ function UploadReceiptContent() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="amount">Amount</Label>
+                    <Label htmlFor="amount">
+                      Amount<span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="amount"
                       className="w-[200px]"
@@ -325,11 +463,7 @@ function UploadReceiptContent() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="button"
-                  onClick={handleSubmit}
-                  className="px-6 py-2 cursor-pointer"
-                >
+                <Button type="button" className="px-6 py-2 cursor-pointer">
                   Add
                 </Button>
               </CardFooter>

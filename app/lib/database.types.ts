@@ -31,25 +31,30 @@ export interface Database {
         Row: {
           id: string
           user_id: string
-          upload_date: string | null
-          status: string
+          status: string | null
           raw_text: string | null
+          image_url: string
+          upload_date: string
           created_at: string
+          deleted_at: string | null
         }
         Insert: {
-          id?: string
+          id: string
           user_id: string
-          upload_date?: string | null
-          status: string
+          status?: string | null
           raw_text?: string | null
-          created_at?: string
+          image_url: string
+          upload_date: string
+          created_at: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
           user_id?: string
-          upload_date?: string | null
           status?: string
           raw_text?: string | null
+          image_url: string
+          upload_date?: string | null
           created_at?: string
         }
       }
@@ -68,7 +73,7 @@ export interface Database {
           created_at: string
         }
         Insert: {
-          id?: string
+          id: string
           receipt_id: string
           vendor: string
           total_amount: number
@@ -77,7 +82,7 @@ export interface Database {
           payment_method?: string | null
           category?: string | null
           remark?: string | null
-          created_at?: string
+          created_at: string
         }
         Update: {
           id?: string
