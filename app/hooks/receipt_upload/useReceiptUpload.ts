@@ -1,5 +1,13 @@
-import { useState, useEffect } from "react";
+// React
+import React, { useState, useEffect } from "react";
+
+// React router
+import { useNavigate } from "react-router";
+
+// Supabase client
 import { supabase } from "~/supabase/supabaseClient";
+
+// Receipt parsing using regex
 import {
   preprocess,
   extractVendor,
@@ -8,11 +16,16 @@ import {
   extractCategory,
   extractPaymentMethod,
 } from "~/utils/receiptParsing";
+
+// Upload receipt
 import {
   uploadImage,
   insertReceipt,
   insertParsedReceipt,
 } from "~/routes/api/receipt_upload/receipts";
+
+// UI components
+import { toast } from "sonner";
 
 // OCR call
 async function runOCR(file: File) {
@@ -45,6 +58,8 @@ export function useReceiptUpload() {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [hasUploaded, setHasUploaded] = useState(false);
   const [showDropzone, setShowDropzone] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -106,20 +121,61 @@ export function useReceiptUpload() {
 
     setHasUploaded(true);
 
-    const imageUrl = await uploadImage(file!, userId!);
-    const receiptId = await insertReceipt(userId!, imageUrl, rawText);
+    try {
+      const imageUrl = await uploadImage(file!, userId!);
+      const receiptId = await insertReceipt(userId!, imageUrl, rawText);
 
-    await insertParsedReceipt(
-      receiptId,
-      vendor,
-      amount,
-      date,
-      selectedPayment,
-      selectedCategory,
-      remark
-    );
+      await insertParsedReceipt(
+        receiptId,
+        vendor,
+        amount,
+        date,
+        selectedPayment,
+        selectedCategory,
+        remark
+      );
+
+      navigate("/receipt_management");
+
+      toast.success(
+        React.createElement(
+          "span",
+          { className: "text-green-600 font-semibold" },
+          "Receipt added successfully!"
+        ),
+        {
+          description: React.createElement(
+            "span",
+            { className: "text-gray-600" },
+            `Vendor: ${vendor} — Date: ${date} — Amount: $${amount}`
+          ),
+
+          style: {
+            border: "2px solid #16a34a", // Tailwind green-600
+          },
+        }
+      );
+    } catch (error) {
+      toast.error(
+        React.createElement(
+          "span",
+          { className: "text-red-600 font-semibold" },
+          "Upload failed"
+        ),
+        {
+          description: React.createElement(
+            "span",
+            { className: "text-gray-600" },
+            error instanceof Error ? error.message : "Something went wrong."
+          ),
+
+          style: {
+            border: "2px solid #dc2626", // Tailwind green-600
+          },
+        }
+      );
+    }
   }
-
   return {
     // State
     file,

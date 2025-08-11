@@ -3,7 +3,9 @@ import type { Route } from "./+types/receipt_management";
 import { AppSidebar } from "~/components/app_sidebar";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import ProtectedRoute from "~/components/ProtectedRoute";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Receipt Management" }];
@@ -11,6 +13,7 @@ export function meta({}: Route.MetaArgs) {
 
 function ReceiptManagementContent() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className="flex h-screen w-full relative text-black">

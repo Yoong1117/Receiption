@@ -1,4 +1,7 @@
+// React
 import { useRef } from "react";
+
+// UI component
 import { Button } from "../ui/button";
 
 interface DropzoneModalProps {

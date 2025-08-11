@@ -1,3 +1,4 @@
+// Supabase client
 import { supabase } from "~/supabase/supabaseClient";
 
 export async function uploadImage(file: File, userId: string) {
@@ -41,18 +42,16 @@ export async function insertParsedReceipt(
   category: string,
   remark?: string
 ) {
-  const { error } = await supabase
-    .from("parsed_receipts")
-    .insert([
-      {
-        receipt_id,
-        vendor,
-        total_amount: amount,
-        date,
-        payment_method: payment,
-        category,
-        remark: remark || null,
-      },
-    ]);
+  const { error } = await supabase.from("parsed_receipts").insert([
+    {
+      receipt_id,
+      vendor,
+      total_amount: amount,
+      date,
+      payment_method: payment,
+      category,
+      remark: remark || null,
+    },
+  ]);
   if (error) throw error;
 }
