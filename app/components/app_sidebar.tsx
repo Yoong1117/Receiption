@@ -3,7 +3,6 @@ import {
   Home,
   Files,
   CircleUserRound,
-  FileUp,
   ChevronDown,
 } from "lucide-react";
 
@@ -36,6 +35,8 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "~/components/ui/collapsible";
+
+import { Separator } from "./ui/separator";
 
 // React
 import { supabase } from "~/supabase/supabaseClient";
@@ -71,6 +72,7 @@ export function AppSidebar() {
       <SidebarHeader className="p-4">
         <h1 className="text-lg font-bold">Receiption</h1>
       </SidebarHeader>
+      <Separator className="bg-gray-400/70"></Separator>
 
       <SidebarContent>
         <SidebarGroup>
@@ -119,10 +121,11 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
+      <Separator className="bg-gray-400/70"></Separator>
       <SidebarFooter>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center w-full px-2 py-1 hover:bg-gray-200 rounded cursor-pointer">
+            <button className="flex items-center w-full px-2 py-1 hover:bg-gray-200/70 rounded cursor-pointer">
               <span className="flex items-center gap-2 px-1">
                 <CircleUserRound className="w-5 h-5" />
                 {username}
@@ -131,7 +134,7 @@ export function AppSidebar() {
             </button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent className="bg-gray-100/20">
+          <DropdownMenuContent className="border border-gray-300">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem

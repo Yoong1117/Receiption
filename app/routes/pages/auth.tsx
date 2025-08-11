@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // React Router
 import type { Route } from "./+types/auth";
@@ -41,7 +41,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
 
-  const { signUpNewUser, session, loading: authLoading } = userAuth();
+  const { session, loading: authLoading } = userAuth();
 
   const navigate = useNavigate();
   const navigation = useNavigation();
@@ -55,9 +55,36 @@ export default function Auth() {
   }, [session, authLoading, navigate]);
 
   // Navigation state
-  //if (isNavigating) {
-  //  return <p>Navigating ...</p>;
-  //}
+  if (isNavigating) {
+    return (
+      <div
+        className="fixed bottom-4 right-4 flex items-center gap-3
+bg-[#E0EDF9] backdrop-blur-md border border-white/20
+px-4 py-2 rounded-full shadow-lg shadow-black/30
+text-gray-100 z-50"
+      >
+        <span className="ml-2 text-xs font-medium tracking-wide text-black">
+          Loading
+        </span>
+        {/* Animated dots */}
+        <motion.span
+          className="w-2 h-2 bg-[#A2CBEE] rounded-full"
+          animate={{ y: [0, -6, 0], opacity: [0.6, 1, 0.6] }}
+          transition={{ repeat: Infinity, duration: 0.6, delay: 0 }}
+        />
+        <motion.span
+          className="w-2 h-2 bg-[#5591DC] rounded-full"
+          animate={{ y: [0, -6, 0], opacity: [0.6, 1, 0.6] }}
+          transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }}
+        />
+        <motion.span
+          className="w-2 h-2 bg-[#3763BE] rounded-full"
+          animate={{ y: [0, -6, 0], opacity: [0.6, 1, 0.6] }}
+          transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }}
+        />
+      </div>
+    );
+  }
 
   // Card Animation
   const cardVariants = {
@@ -88,11 +115,11 @@ export default function Auth() {
   };
 
   return (
-    <div className="w-full h-screen relative flex justify-center items-center overflow-hidden">
+    <div className="bg-[#F1F7FD]/30 w-full h-screen relative flex justify-center items-center overflow-hidden">
       <div className="relative z-10 flex h-screen items-center justify-center w-full">
         <div
           className="flex min-h-[650px] w-full max-w-[1000px] items-center justify-center gap-8 px-4
-             rounded-xl border border-gray-300/10 bg-gray-100 backdrop-blur-sm"
+             rounded-xl border border-gray-300/10 bg-[#E0EDF9]/50 backdrop-blur-sm"
         >
           <AnimatePresence custom={isSignUp ? 1 : -1} mode="wait">
             {isSignUp ? (

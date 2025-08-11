@@ -17,7 +17,7 @@ export function meta({}: Route.MetaArgs) {
 
 function DashboardContent() {
   return (
-    <div className="flex h-screen w-full relative text-black bg-gray-100/10">
+    <div className="flex h-screen w-full relative overflow-hidden text-black bg-[#F1F7FD]/30">
       {/* Sidebar */}
       <AppSidebar />
 
@@ -25,7 +25,7 @@ function DashboardContent() {
       <div className="flex flex-1 flex-col h-full relative z-10">
         {/* Header Row */}
         <div className="flex m-6">
-          <SidebarTrigger className="bg-gray-100 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
+          <SidebarTrigger className="bg-white/50 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
           <div className="justify-center items-center pl-4">
             <h1 className="text-lg font-semibold">Dashboard</h1>
           </div>
@@ -49,7 +49,7 @@ function DashboardContent() {
               threshold={0.2}
               delay={0.2}
             >
-              <Card className="bg-gray-100 w-full h-[300px] p-6 border-gray-400">
+              <Card className="bg-[#E0EDF9]/70 w-full h-[300px] p-6 border-gray-400">
                 <CardHeader>
                   <CardTitle className="text-[28px] font-semibold">
                     Number of Receipts
@@ -82,7 +82,7 @@ function DashboardContent() {
               threshold={0.4}
               delay={0.4}
             >
-              <Card className="bg-gray-200 w-full h-[300px] p-6 border-gray-500">
+              <Card className="bg-[#C8DFF5]/80 w-full h-[300px] p-6 border-gray-500">
                 <CardHeader>
                   <CardTitle className="text-[28px] font-bold">
                     Monthly Expense: Summary
@@ -109,7 +109,7 @@ function DashboardContent() {
               threshold={0.2}
               delay={0.6}
             >
-              <Card className="bg-gray-300 w-full h-[300px] p-6 border-gray-600">
+              <Card className="bg-[#A2CBEE]/80 w-full h-[300px] p-6 border-gray-600">
                 <CardHeader>
                   <CardTitle className="text-[28px] font-bold">
                     Monthly Expense: Trend
@@ -131,7 +131,7 @@ function DashboardContent() {
               threshold={0.2}
               delay={0.8}
             >
-              <Card className="bg-gray-100 w-full h-[300px] p-6 border-gray-400">
+              <Card className="bg-[#E0EDF9]/70 w-full h-[300px] p-6 border-gray-400">
                 <CardHeader>
                   <CardTitle className="text-[28px] font-bold">
                     Top Spending Categories

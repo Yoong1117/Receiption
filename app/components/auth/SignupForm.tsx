@@ -39,13 +39,14 @@ export default function SignupForm({ onSwitch }: SignupFormProps) {
   } = useSignupForm();
 
   return (
-    <Card className="w-full max-w-sm bg-white/95">
+    <Card className="border border-gray-100 bg-white/80 w-full max-w-sm">
       <CardHeader>
         <CardTitle>Join Receiption today</CardTitle>
         <CardDescription>Sign up for a new account</CardDescription>
         <CardAction>
           <Button
             variant="link"
+            className="text-blue-600 cursor-pointer"
             onClick={() => {
               setError([]);
               onSwitch();
@@ -137,7 +138,11 @@ export default function SignupForm({ onSwitch }: SignupFormProps) {
           )}
 
           {/* Sign up */}
-          <Button type="submit" className="w-full mt-2" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-full mt-2 bg-[#4077D0] hover:bg-[#3763BE] cursor-pointer"
+            disabled={loading}
+          >
             Sign Up
           </Button>
         </CardFooter>
