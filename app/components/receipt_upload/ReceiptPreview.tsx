@@ -63,7 +63,7 @@ export default function ReceiptPreview({
   return (
     <>
       {/* Main preview card */}
-      <Card className="bg-[#E0EDF9]/20 w-7/8 flex flex-col rounded-none border-r border-gray-200">
+      <Card className="bg-[#F1F7FD] w-7/8 flex flex-col rounded-none border-r border-gray-200">
         <CardHeader className="sticky top-0 z-10">
           <CardTitle>Receipt Preview</CardTitle>
           <CardDescription>Preview the uploaded receipt image</CardDescription>
@@ -74,7 +74,7 @@ export default function ReceiptPreview({
             className={
               file
                 ? "w-[230px] h-auto flex items-center justify-center text-gray-500 rounded cursor-zoom-in"
-                : "w-80 h-[460px] border border-gray-400 bg-white/50 flex items-center justify-center text-gray-500 rounded"
+                : "w-80 h-[460px] border border-gray-400 bg-white/20 flex items-center justify-center text-gray-500 rounded"
             }
           >
             {file ? (

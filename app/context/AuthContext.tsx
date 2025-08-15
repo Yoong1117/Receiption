@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 interface AuthContextType {
   session: any;
   loading: boolean;
+  userId: string | null;
   setSession: React.Dispatch<React.SetStateAction<any>>;
   signUpNewUser: (
     email: string,
@@ -24,6 +25,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<any>(undefined);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setUserId(data.user.id);
+    });
+  }, []);
 
   // Sign up
   const signUpNewUser = async (
@@ -119,6 +127,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       value={{
         session,
         loading,
+        userId,
         setSession,
         signUpNewUser,
         loginUser,

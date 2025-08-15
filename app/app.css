@@ -17,6 +17,19 @@ body {
   }
 }
 
+body {
+  background: 
+    radial-gradient(transparent 4px),
+    radial-gradient(transparent 4px),
+    linear-gradient(#F1F7FD 4px, transparent 0),
+    linear-gradient(45deg, transparent 74px, transparent 75px, #A2CBEE 75px, #A2CBEE 76px, transparent 77px, transparent 109px),
+    linear-gradient(-45deg, transparent 75px, transparent 76px, #A2CBEE 76px, #A2CBEE 77px, transparent 78px, transparent 109px),
+    #F1F7FD;
+  background-size: 109px 109px, 109px 109px,100% 6px, 109px 109px, 109px 109px;
+  background-position: 54px 55px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+}
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -61,7 +74,7 @@ body {
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
+  --popover: rgb(243, 249, 255);
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.21 0.006 285.885);
   --primary-foreground: oklch(0.985 0 0);
@@ -80,7 +93,7 @@ body {
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: rgba(224, 237, 249, 0.2);
+  --sidebar: rgb(237, 245, 252);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.21 0.006 285.885);
   --sidebar-primary-foreground: oklch(0.985 0 0);

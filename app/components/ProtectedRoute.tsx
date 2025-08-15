@@ -15,7 +15,7 @@ export default function ProtectedRoute({
     return (
       <div
         className="fixed bottom-4 right-4 flex items-center gap-3
-  bg-[#E0EDF9] backdrop-blur-md border border-white/20
+  bg-[#F1F7FD] backdrop-blur-md border border-white/20
   px-4 py-2 rounded-full shadow-lg shadow-black/30
   text-gray-100 z-50"
       >

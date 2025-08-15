@@ -81,7 +81,7 @@ export default function ReceiptDetailsForm(props: ReceiptDetailsFormProps) {
   } = props;
 
   return (
-    <Card className="bg-white/70 w-1/2 rounded-none border-l border-gray-200 flex flex-col">
+    <Card className="bg-white/90 w-1/2 rounded-none border-l border-gray-200 flex flex-col">
       <CardHeader className="sticky top-0 z-10">
         <CardTitle>Receipt Details</CardTitle>
         <CardDescription>

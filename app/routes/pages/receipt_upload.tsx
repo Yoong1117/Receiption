@@ -79,7 +79,7 @@ export default function UploadReceiptContent({
     <>
       {" "}
       <ProtectedRoute>
-        <div className="flex h-screen w-full overflow-hidden relative text-black bg-[#F1F7FD]/30">
+        <div className="flex h-screen w-full overflow-hidden relative text-black">
           {/* Sidebar */}
           <AppSidebar />
 
@@ -87,7 +87,7 @@ export default function UploadReceiptContent({
           <div className="flex flex-1 flex-col relative z-10">
             {/* Header */}
             <div className="flex m-6">
-              <SidebarTrigger className="bg-white/50 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
+              <SidebarTrigger className="bg-white/80 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
               <div className="justify-center items-center pl-4">
                 <h1 className="text-lg font-semibold">
                   Receipt Management - Upload
