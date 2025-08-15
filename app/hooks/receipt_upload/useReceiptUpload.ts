@@ -147,7 +147,7 @@ export function useReceiptUpload() {
           description: React.createElement(
             "span",
             { className: "text-gray-600" },
-            `Vendor: ${vendor} — Date: ${date} — Amount: $${amount}`
+            `Vendor: ${vendor} — Date: ${date} — Amount: RM${amount}`
           ),
 
           style: {

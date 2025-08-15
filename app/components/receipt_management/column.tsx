@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
+import { useNavigate } from "react-router";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -17,6 +18,7 @@ import {
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Receipt = {
+  id: string;
   vendor: string;
   payment: string;
   category: string;
@@ -129,10 +131,11 @@ export const columns: ColumnDef<Receipt>[] = [
     id: "actions",
     cell: ({ row }) => {
       const receipt = row.original;
+      const navigate = useNavigate();
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild className="cursor-pointer">
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
@@ -142,12 +145,22 @@ export const columns: ColumnDef<Receipt>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(receipt.vendor)}
+              className="cursor-pointer"
             >
               Copy Receipt ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit Receipt Details</DropdownMenuItem>
-            <DropdownMenuItem>Delete Receipt</DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() =>
+                navigate(`/receipt_management/receipt_edit/${receipt.id}`)
+              }
+            >
+              Edit Receipt Details
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              Delete Receipt
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

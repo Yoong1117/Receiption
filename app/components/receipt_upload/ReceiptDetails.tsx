@@ -1,3 +1,6 @@
+// React Router
+import { useNavigate } from "react-router";
+
 // UI components
 import {
   Card,
@@ -36,6 +39,7 @@ interface Option {
 }
 
 interface ReceiptDetailsFormProps {
+  from: string;
   vendor: string;
   date: string;
   amount: string;
@@ -58,7 +62,10 @@ interface ReceiptDetailsFormProps {
 }
 
 export default function ReceiptDetailsForm(props: ReceiptDetailsFormProps) {
+  const navigate = useNavigate();
+
   const {
+    from,
     vendor,
     date,
     amount,
@@ -101,6 +108,7 @@ export default function ReceiptDetailsForm(props: ReceiptDetailsFormProps) {
             type="text"
             value={vendor}
             onChange={(e) => setVendor(e.target.value)}
+            required
           />
         </div>
 
@@ -115,6 +123,7 @@ export default function ReceiptDetailsForm(props: ReceiptDetailsFormProps) {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
+            required
           />
         </div>
 
@@ -129,6 +138,7 @@ export default function ReceiptDetailsForm(props: ReceiptDetailsFormProps) {
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
+            required={true}
           />
         </div>
 
@@ -249,15 +259,36 @@ export default function ReceiptDetailsForm(props: ReceiptDetailsFormProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="pt-10 flex justify-center">
-        <Button
-          type="button"
-          onClick={onSubmit}
-          className="px-6 py-2 cursor-pointer bg-[#4077D0] hover:bg-[#3763BE]"
-        >
-          Add
-        </Button>
-      </CardFooter>
+      {from === "receipt_upload" && (
+        <CardFooter className="pt-10 flex justify-center">
+          <Button
+            type="button"
+            onClick={onSubmit}
+            className="px-6 py-2 cursor-pointer bg-[#4077D0] hover:bg-[#3763BE]"
+          >
+            Add
+          </Button>
+        </CardFooter>
+      )}
+
+      {from === "receipt_edit" && (
+        <CardFooter className="pt-10 flex justify-between">
+          <Button
+            type="button"
+            onClick={() => navigate("/receipt_management")}
+            className="px-6 py-2 cursor-pointer bg-red-700/90 hover:bg-red-600/90 text-white hover:text-white"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            onClick={onSubmit}
+            className="px-6 py-2 cursor-pointer bg-[#4077D0] hover:bg-[#3763BE]"
+          >
+            Confirm
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }

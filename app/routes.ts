@@ -5,6 +5,7 @@ export default [
   index("routes/pages/auth.tsx"),
   route("dashboard", "routes/pages/dashboard.tsx"),
   route("receipt_management", "routes/pages/receipt_management.tsx"),
+  route("receipt_management/receipt_edit/:id", "routes/pages/receipt_edit.tsx"),
   route("receipt_upload", "routes/pages/receipt_upload.tsx"),
   route("*", "routes/pages/not_found.tsx"),
 

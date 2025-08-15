@@ -17,7 +17,7 @@ import ProtectedRoute from "~/components/ProtectedRoute";
 import { DataTable } from "~/components/receipt_management/data_table";
 import { columns, type Receipt } from "~/components/receipt_management/column";
 
-// React bits
+// React
 import FadeContent from "@/FadeContent/FadeContent";
 
 export function meta({}: Route.MetaArgs) {
@@ -66,6 +66,7 @@ export default function ReceiptManagementContent() {
           ? r.parsed_receipts[0]
           : r.parsed_receipts;
         return {
+          id: r.id,
           vendor: parsed?.vendor ?? "Unknown",
           payment: parsed?.payment_method ?? "Unknown",
           category: parsed?.category ?? "Uncategorized",

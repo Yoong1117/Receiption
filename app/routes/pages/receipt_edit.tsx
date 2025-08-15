@@ -1,24 +1,18 @@
-// React Router
-import type { Route } from "./+types/receipt_upload";
-
-// Supabase
-import { supabase } from "~/supabase/supabaseClient";
-
-// UI Components
+import ReceiptPreview from "~/components/receipt_upload/ReceiptPreview";
+import ReceiptDetailsForm from "~/components/receipt_upload/ReceiptDetails";
 import ProtectedRoute from "~/components/ProtectedRoute";
 import { AppSidebar } from "~/components/app_sidebar";
 import { SidebarTrigger } from "~/components/ui/sidebar";
-
-import ReceiptPreview from "~/components/receipt_upload/ReceiptPreview";
-import DropzoneModal from "~/components/receipt_upload/DropzoneModal";
-import ReceiptDetailsForm from "~/components/receipt_upload/ReceiptDetails";
-
-// Receipt upload
-import { useReceiptUpload } from "~/hooks/receipt_upload/useReceiptUpload";
+import { useReceiptEdit } from "~/hooks/receipt_edit/useReceiptEdit";
+import { supabase } from "~/supabase/supabaseClient";
+import { useEffect, useState } from "react";
+import type { Route } from "./+types/receipt_edit";
+import type { ClientLoaderFunctionArgs } from "react-router";
 
 // Loader
-export async function loader() {
-  const [categoriesResult, paymentsResult] = await Promise.all([
+export async function clientLoader({ params }: ClientLoaderFunctionArgs) {
+  const receiptId = params.id;
+  const [categoriesResult, paymentsResult, receiptData] = await Promise.all([
     supabase
       .from("categories")
       .select("id, label")
@@ -27,29 +21,35 @@ export async function loader() {
       .from("payment_methods")
       .select("id, label")
       .order("sort_order", { ascending: true }),
+    supabase
+      .from("receipts")
+      .select(
+        "id, image_url, parsed_receipts (vendor, total_amount, date, payment_method, category, remark)"
+      )
+      .eq("id", receiptId),
   ]);
 
-  // Handle errors
-  if (categoriesResult.error || paymentsResult.error) {
-    return {
-      error: categoriesResult.error ?? paymentsResult.error,
-    };
-  }
+  if (receiptData)
+    if (categoriesResult.error || paymentsResult.error || receiptData.error) {
+      return {
+        error:
+          categoriesResult.error ?? paymentsResult.error ?? receiptData.error,
+      };
+    }
 
   return {
     categories: categoriesResult.data,
     paymentMethods: paymentsResult.data,
+    receiptData: receiptData.data,
   };
 }
 
-export default function UploadReceiptContent({
-  loaderData,
-}: Route.ComponentProps) {
-  const { categories, paymentMethods } = loaderData;
+export default function receipt_edit({ loaderData }: Route.ComponentProps) {
+  const { categories, paymentMethods, receiptData } = loaderData;
+  const [initialData, setInitialData] = useState<Boolean>(false);
 
   const {
     // States
-    file,
     vendor,
     date,
     amount,
@@ -58,7 +58,6 @@ export default function UploadReceiptContent({
     remark,
     paymentOpen,
     categoryOpen,
-    showDropzone,
     // Setters
     setVendor,
     setDate,
@@ -68,12 +67,41 @@ export default function UploadReceiptContent({
     setRemark,
     setPaymentOpen,
     setCategoryOpen,
-    setShowDropzone,
-    // Handler
-    handleFileSelect,
-    handleDrop,
-    upload, // renamed from `handleUpload` in your old code
-  } = useReceiptUpload();
+    update,
+  } = useReceiptEdit(receiptData?.[0]?.id);
+
+  useEffect(() => {
+    if (!receiptData?.[0]?.parsed_receipts) return;
+
+    if (!initialData) {
+      const parsed = Array.isArray(receiptData[0].parsed_receipts)
+        ? receiptData[0].parsed_receipts[0]
+        : receiptData[0].parsed_receipts;
+
+      setVendor(parsed?.vendor || "");
+      setDate(parsed?.date || "");
+      setAmount(parsed?.total_amount?.toString() || "");
+
+      // Match payment method label to its ID
+      const paymentMatch = paymentMethods?.find(
+        (p) =>
+          p.id === parsed.payment_method ||
+          p.label.toLowerCase() === parsed.payment_method?.toLowerCase()
+      );
+      setSelectedPayment(paymentMatch?.id || "");
+
+      // Match category label to its ID
+      const categoryMatch = categories?.find(
+        (c) =>
+          c.id === parsed.category ||
+          c.label.toLowerCase() === parsed.category?.toLowerCase()
+      );
+      setSelectedCategory(categoryMatch?.id || "");
+
+      setRemark(parsed.remark || "");
+      setInitialData(true);
+    }
+  });
 
   return (
     <>
@@ -89,7 +117,9 @@ export default function UploadReceiptContent({
             <div className="flex m-6">
               <SidebarTrigger className="bg-white/80 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
               <div className="justify-center items-center pl-4">
-                <h1 className="text-lg font-semibold">Upload Receipt</h1>
+                <h1 className="text-lg font-semibold">
+                  Receipt Management - Edit
+                </h1>
               </div>
             </div>
 
@@ -97,23 +127,13 @@ export default function UploadReceiptContent({
               <div className="flex flex-1 rounded-lg shadow border border-gray-400">
                 {/* Receipt Preview */}
                 <ReceiptPreview
-                  from="receipt_upload"
-                  file={file}
-                  onUploadClick={() => setShowDropzone(true)}
+                  from="receipt_edit"
+                  imageUrl={receiptData?.[0]?.image_url ?? ""}
                 />
-
-                {/* Dropzone Modal */}
-                {showDropzone && (
-                  <DropzoneModal
-                    onDrop={handleDrop}
-                    onFileSelect={handleFileSelect}
-                    onCancel={() => setShowDropzone(false)}
-                  />
-                )}
 
                 {/* Receipt Details */}
                 <ReceiptDetailsForm
-                  from="receipt_upload"
+                  from="receipt_edit"
                   vendor={vendor}
                   date={date}
                   amount={amount}
@@ -132,7 +152,7 @@ export default function UploadReceiptContent({
                   setRemark={setRemark}
                   setPaymentOpen={setPaymentOpen}
                   setCategoryOpen={setCategoryOpen}
-                  onSubmit={upload}
+                  onSubmit={update}
                 />
               </div>
             </main>

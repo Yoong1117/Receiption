@@ -14,12 +14,16 @@ import {
 } from "~/components/ui/card";
 
 interface ReceiptPreviewPros {
-  file: File | null;
-  onUploadClick: () => void;
+  file?: File | null;
+  imageUrl?: string | null;
+  from: string;
+  onUploadClick?: () => void;
 }
 
 export default function ReceiptPreview({
   file,
+  imageUrl,
+  from,
   onUploadClick,
 }: ReceiptPreviewPros) {
   const [zoomed, setZoomed] = useState(false);
@@ -72,35 +76,50 @@ export default function ReceiptPreview({
         <CardContent className="flex-1 flex flex-col justify-center items-center">
           <div
             className={
-              file
+              (from === "receipt_upload" && file) ||
+              (from === "receipt_edit" && imageUrl)
                 ? "w-[230px] h-auto flex items-center justify-center text-gray-500 rounded cursor-zoom-in"
                 : "w-80 h-[460px] border border-gray-400 bg-white/20 flex items-center justify-center text-gray-500 rounded"
             }
           >
-            {file ? (
-              <img
-                src={URL.createObjectURL(file)}
-                alt="Receipt Preview"
-                className="object-contain max-h-[400px]"
-                onClick={openZoom} // open modal
-              />
-            ) : (
-              "No Receipt"
-            )}
+            {from === "receipt_upload" &&
+              (file ? (
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt="Receipt Preview"
+                  className="object-contain max-h-[400px]"
+                  onClick={openZoom}
+                />
+              ) : (
+                "No Receipt"
+              ))}
+
+            {from === "receipt_edit" &&
+              (imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="Receipt Preview"
+                  className="object-contain max-h-[400px]"
+                  onClick={openZoom}
+                />
+              ) : (
+                "No Receipt"
+              ))}
           </div>
         </CardContent>
-
-        <CardFooter className="flex justify-center">
-          <Label className="cursor-pointer">
-            <Button className="cursor-pointer" onClick={onUploadClick}>
-              {file ? "Re-upload" : "Upload"}
-            </Button>
-          </Label>
-        </CardFooter>
+        {from === "receipt_upload" && (
+          <CardFooter className="flex justify-center">
+            <Label className="cursor-pointer">
+              <Button className="cursor-pointer" onClick={onUploadClick}>
+                {file ? "Re-upload" : "Upload"}
+              </Button>
+            </Label>
+          </CardFooter>
+        )}
       </Card>
 
       {/* Zoom modal */}
-      {zoomed && file && (
+      {zoomed && (file || imageUrl) && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
           onMouseUp={handleMouseUp}
@@ -108,7 +127,7 @@ export default function ReceiptPreview({
           onWheel={handleWheel}
         >
           <img
-            src={URL.createObjectURL(file)}
+            src={file ? URL.createObjectURL(file) : imageUrl || undefined}
             alt="Zoomed Receipt"
             style={{
               transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
@@ -119,7 +138,7 @@ export default function ReceiptPreview({
             }}
             className="select-none"
             onMouseDown={handleMouseDown}
-            onDoubleClick={() => setZoomed(false)} // double-click to close
+            onDoubleClick={() => setZoomed(false)}
           />
           {/* Close button */}
           <button
