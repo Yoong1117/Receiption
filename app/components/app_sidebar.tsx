@@ -112,6 +112,11 @@ export function AppSidebar() {
                           <a href="/receipt_upload">Upload Receipts</a>
                         </SidebarMenuButton>
                       </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuButton asChild>
+                          <a href="/receipt_deleted">Deleted Receipts</a>
+                        </SidebarMenuButton>
+                      </SidebarMenuSubItem>
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>

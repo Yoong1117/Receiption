@@ -56,10 +56,22 @@ function DashboardContent() {
 
   const { userId } = userAuth();
 
-  // Year-to-Date
   useEffect(() => {
     if (!userId) return;
 
+    const fetchAllData = async () => {
+      try {
+        await Promise.all([
+          fetchYearToDateData(),
+          fetchMonthlyData(),
+          fetchTrendData(),
+        ]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    // Year to Date
     const fetchYearToDateData = async () => {
       const currentYear = new Date().getFullYear();
       const startOfYear = `${currentYear}-01-01`;
@@ -67,21 +79,14 @@ function DashboardContent() {
       const { data: receiptsData, error } = await supabase
         .from("receipts")
         .select(
-          `
-          created_at,
-          parsed_receipts (
-            total_amount
-          )
-        `
+          `created_at,
+           parsed_receipts ( total_amount )`
         )
         .eq("user_id", userId)
         .eq("is_active", true)
         .gte("created_at", startOfYear);
 
-      if (error) {
-        console.error("Error fetching YTD data:", error);
-        return;
-      }
+      if (error) throw error;
 
       const total = (receiptsData ?? []).reduce((sum, r) => {
         const parsed = Array.isArray(r.parsed_receipts)
@@ -91,42 +96,28 @@ function DashboardContent() {
       }, 0);
 
       setYtdTotal(total);
-
       const currentMonth = new Date().getMonth() + 1;
       setAvgPerMonth(total / currentMonth);
     };
 
-    fetchYearToDateData();
-  }, [userId]);
-
-  // Current Month Summary and Top 5 Spending Categories
-  useEffect(() => {
-    if (!userId) return;
-
+    // Statistic for this month
     const fetchMonthlyData = async () => {
       const now = new Date();
-      const startOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+      const startOfMonth = `${now.getFullYear()}-${String(
+        now.getMonth() + 1
+      ).padStart(2, "0")}-01`;
 
       const { data: receiptsData, error } = await supabase
         .from("receipts")
         .select(
-          `
-          created_at,
-          parsed_receipts (
-            total_amount,
-            vendor,
-            category
-          )
-        `
+          `created_at,
+           parsed_receipts ( total_amount, vendor, category )`
         )
         .eq("user_id", userId)
         .eq("is_active", true)
         .gte("created_at", startOfMonth);
 
-      if (error) {
-        console.error("Error fetching monthly data:", error);
-        return;
-      }
+      if (error) throw error;
 
       let total = 0;
       let highest = { amount: 0, vendor: "" };
@@ -152,7 +143,6 @@ function DashboardContent() {
       setMonthlyTotal(total);
       setHighestSpent(highest);
 
-      // Find top categories
       const sortedCategories = Object.entries(categoryTotals)
         .map(([category, total]) => ({
           category: category.charAt(0).toUpperCase() + category.slice(1),
@@ -160,9 +150,8 @@ function DashboardContent() {
         }))
         .sort((a, b) => b.total - a.total);
 
-      setTopCategories(sortedCategories.slice(0, 5)); // Top 5
+      setTopCategories(sortedCategories.slice(0, 5));
 
-      // Find top category
       const topCatEntry = Object.entries(categoryTotals).sort(
         (a, b) => b[1] - a[1]
       )[0];
@@ -171,37 +160,20 @@ function DashboardContent() {
       }
     };
 
-    fetchMonthlyData();
-  }, [userId]);
-
-  // Monthly Expense Trend
-  useEffect(() => {
-    if (!userId) return;
-
+    // Trend data
     const fetchTrendData = async () => {
       const startDate = new Date();
-      startDate.setMonth(startDate.getMonth() - 11); // Go back 11 months (12 months total)
+      startDate.setMonth(startDate.getMonth() - 11);
 
       const { data: receiptsData, error } = await supabase
         .from("receipts")
-        .select(
-          `
-        parsed_receipts (
-          total_amount,
-          date
-        )
-      `
-        )
+        .select(`parsed_receipts ( total_amount, date )`)
         .eq("user_id", userId)
         .eq("is_active", true)
-        .gte("parsed_receipts.date", startDate.toISOString().split("T")[0]); // <-- filter by parsed_receipts.date
+        .gte("parsed_receipts.date", startDate.toISOString().split("T")[0]);
 
-      if (error) {
-        console.error("Error fetching monthly trend data:", error);
-        return;
-      }
+      if (error) throw error;
 
-      // Aggregate totals per month
       const monthlyTotals: Record<string, number> = {};
       (receiptsData ?? []).forEach((r) => {
         const parsed = Array.isArray(r.parsed_receipts)
@@ -210,10 +182,8 @@ function DashboardContent() {
 
         const amount = Number(parsed?.total_amount) || 0;
         const date = parsed?.date ? new Date(parsed.date) : null;
-
         if (!date) return;
 
-        // Format: Jun 25
         const monthKey =
           date.toLocaleString("default", { month: "short" }) +
           " " +
@@ -222,7 +192,6 @@ function DashboardContent() {
         monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + amount;
       });
 
-      // Ensure all last 12 months are present
       const months = [];
       for (let i = 11; i >= 0; i--) {
         const d = new Date();
@@ -241,7 +210,7 @@ function DashboardContent() {
       setMonthlyTrend(months);
     };
 
-    fetchTrendData();
+    fetchAllData();
   }, [userId]);
 
   return (

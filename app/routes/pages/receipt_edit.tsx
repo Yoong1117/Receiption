@@ -8,6 +8,7 @@ import { supabase } from "~/supabase/supabaseClient";
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/receipt_edit";
 import type { ClientLoaderFunctionArgs } from "react-router";
+import Loading from "~/components/customLoading";
 
 // Loader
 export async function clientLoader({ params }: ClientLoaderFunctionArgs) {
@@ -58,6 +59,7 @@ export default function receipt_edit({ loaderData }: Route.ComponentProps) {
     remark,
     paymentOpen,
     categoryOpen,
+    loading,
     // Setters
     setVendor,
     setDate,
@@ -107,57 +109,62 @@ export default function receipt_edit({ loaderData }: Route.ComponentProps) {
     <>
       {" "}
       <ProtectedRoute>
-        <div className="flex h-screen w-full overflow-hidden relative text-black">
-          {/* Sidebar */}
-          <AppSidebar />
+        <>
+          <div className="flex h-screen w-full overflow-hidden relative text-black">
+            {/* Sidebar */}
+            <AppSidebar />
 
-          {/* Main Content */}
-          <div className="flex flex-1 flex-col relative z-10">
-            {/* Header */}
-            <div className="flex m-6">
-              <SidebarTrigger className="bg-white/80 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
-              <div className="justify-center items-center pl-4">
-                <h1 className="text-lg font-semibold">
-                  Receipt Management - Edit
-                </h1>
+            {/* Main Content */}
+            <div className="flex flex-1 flex-col relative z-10">
+              {/* Header */}
+              <div className="flex m-6">
+                <SidebarTrigger className="bg-white/80 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
+                <div className="justify-center items-center pl-4">
+                  <h1 className="text-lg font-semibold">
+                    Receipt Management - Edit
+                  </h1>
+                </div>
               </div>
+
+              <main className="flex flex-1 justify-center p-6 pt-0">
+                <div className="flex flex-1 rounded-lg shadow border border-gray-400">
+                  {/* Receipt Preview */}
+                  <ReceiptPreview
+                    from="receipt_edit"
+                    imageUrl={receiptData?.[0]?.image_url ?? ""}
+                  />
+
+                  {/* Receipt Details */}
+                  <ReceiptDetailsForm
+                    from="receipt_edit"
+                    vendor={vendor}
+                    date={date}
+                    amount={amount}
+                    selectedPayment={selectedPayment}
+                    selectedCategory={selectedCategory}
+                    remark={remark}
+                    paymentMethods={paymentMethods ?? []}
+                    categories={categories ?? []}
+                    paymentOpen={paymentOpen}
+                    categoryOpen={categoryOpen}
+                    setVendor={setVendor}
+                    setDate={setDate}
+                    setAmount={setAmount}
+                    setSelectedPayment={setSelectedPayment}
+                    setSelectedCategory={setSelectedCategory}
+                    setRemark={setRemark}
+                    setPaymentOpen={setPaymentOpen}
+                    setCategoryOpen={setCategoryOpen}
+                    onSubmit={update}
+                  />
+                </div>
+              </main>
             </div>
-
-            <main className="flex flex-1 justify-center p-6 pt-0">
-              <div className="flex flex-1 rounded-lg shadow border border-gray-400">
-                {/* Receipt Preview */}
-                <ReceiptPreview
-                  from="receipt_edit"
-                  imageUrl={receiptData?.[0]?.image_url ?? ""}
-                />
-
-                {/* Receipt Details */}
-                <ReceiptDetailsForm
-                  from="receipt_edit"
-                  vendor={vendor}
-                  date={date}
-                  amount={amount}
-                  selectedPayment={selectedPayment}
-                  selectedCategory={selectedCategory}
-                  remark={remark}
-                  paymentMethods={paymentMethods ?? []}
-                  categories={categories ?? []}
-                  paymentOpen={paymentOpen}
-                  categoryOpen={categoryOpen}
-                  setVendor={setVendor}
-                  setDate={setDate}
-                  setAmount={setAmount}
-                  setSelectedPayment={setSelectedPayment}
-                  setSelectedCategory={setSelectedCategory}
-                  setRemark={setRemark}
-                  setPaymentOpen={setPaymentOpen}
-                  setCategoryOpen={setCategoryOpen}
-                  onSubmit={update}
-                />
-              </div>
-            </main>
           </div>
-        </div>
+
+          {/* Loading */}
+          {loading && <Loading />}
+        </>
       </ProtectedRoute>
     </>
   );

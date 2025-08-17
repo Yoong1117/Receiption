@@ -1,3 +1,6 @@
+// Route
+import ProtectedRoute from "~/components/ProtectedRoute";
+
 // Supabase
 import { supabase } from "~/supabase/supabaseClient";
 
@@ -13,12 +16,29 @@ import { Button } from "~/components/ui/button";
 import { AppSidebar } from "~/components/app_sidebar";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 
-import ProtectedRoute from "~/components/ProtectedRoute";
 import { DataTable } from "~/components/receipt_management/data_table";
-import { columns, type Receipt } from "~/components/receipt_management/column";
 
-// React
+import {
+  createColumns,
+  type Receipt,
+} from "~/components/receipt_management/column";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
+
 import FadeContent from "@/FadeContent/FadeContent";
+
+import { toast } from "sonner";
+import React from "react";
+import Loading from "~/components/customLoading";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Receipt Management" }];
@@ -29,6 +49,64 @@ export default function ReceiptManagementContent() {
 
   const [userId, setUserId] = useState<string | null>(null);
   const [receipts, setReceipts] = useState<Receipt[]>([]);
+  const [receiptToDelete, setReceiptToDelete] = useState<Receipt | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleDeleteClick = (receipt: Receipt) => {
+    setReceiptToDelete(receipt);
+  };
+
+  const confirmDelete = async () => {
+    if (!receiptToDelete) return;
+    setLoading(true);
+
+    const { error } = await supabase
+      .from("receipts")
+      .update({
+        is_active: false,
+        deleted_at: new Date().toISOString(),
+      })
+      .eq("id", receiptToDelete.id);
+
+    setLoading(false);
+
+    if (error) {
+      toast.error(
+        React.createElement(
+          "span",
+          { className: "text-red-600 font-semibold" },
+          "Failed to delete"
+        ),
+        {
+          description: React.createElement(
+            "span",
+            { className: "text-gray-600" },
+            error instanceof Error ? error.message : "Something went wrong."
+          ),
+
+          style: {
+            border: "1px solid #dc2626", // Tailwind green-600
+          },
+        }
+      );
+    } else {
+      setReceipts((prev) => prev.filter((r) => r.id !== receiptToDelete.id));
+      toast.success(
+        React.createElement(
+          "span",
+          { className: "text-green-600 font-semibold" },
+          "Receipt delete successfully"
+        ),
+        {
+          style: {
+            border: "1px solid #16a34a", // Tailwind green-600
+          },
+        }
+      );
+    }
+
+    setReceiptToDelete(null); // close dialog
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -75,8 +153,9 @@ export default function ReceiptManagementContent() {
           upload: r.created_at?.split("T")[0] ?? "",
         };
       });
-
+      setLoading(true);
       setReceipts(mapped);
+      setLoading(false);
     };
 
     fetchReceipts();
@@ -91,66 +170,109 @@ export default function ReceiptManagementContent() {
 
   return (
     <ProtectedRoute>
-      <div className="flex h-screen w-full relative text-black">
-        {/* Sidebar */}
-        <AppSidebar />
+      <>
+        <div className="flex h-screen w-full relative text-black">
+          {/* Sidebar */}
+          <AppSidebar />
 
-        {/* Main content */}
-        <div className="flex-1 flex flex-col h-full relative p-6 overflow-auto">
-          {/* Header Row */}
-          <div className="flex mb-6 justify-between items-center">
-            <div className="flex items-center">
-              <SidebarTrigger className="bg-gray-100 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
-              <div className="pl-4">
-                <h1 className="text-lg font-semibold">
-                  Receipt Management - Overview
-                </h1>
+          {/* Main content */}
+          <div className="flex-1 flex flex-col h-full relative p-6 overflow-auto">
+            {/* Header Row */}
+            <div className="flex mb-6 justify-between items-center">
+              <div className="flex items-center">
+                <SidebarTrigger className="bg-gray-100 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
+                <div className="pl-4">
+                  <h1 className="text-lg font-semibold">
+                    Receipt Management - Overview
+                  </h1>
+                </div>
               </div>
+              <Button
+                className="cursor-pointer bg-[#4077D0] hover:bg-[#3763BE]"
+                onClick={() => navigate("/receipt_upload")}
+              >
+                Upload Receipt
+              </Button>
             </div>
-            <Button
-              className="cursor-pointer bg-[#4077D0] hover:bg-[#3763BE]"
-              onClick={() => navigate("/receipt_upload")}
-            >
-              Upload Receipt
-            </Button>
-          </div>
 
-          {/* Summary Cards */}
-          <div className="flex flex-nowrap justify-center gap-6 mb-6">
-            <FadeContent
-              blur={false}
-              duration={1000}
-              easing="ease-out"
-              initialOpacity={0}
-            >
-              <div className="bg-[#E0EDF9] border border-[#A2CBEE] text-center py-6 mx-6 rounded w-[190px] sm:w-[260px] md:w-[330px] lg:w-[450px]">
-                <p className="text-xl">Total Receipt</p>
-                <p className="text-2xl font-bold">{totalReceipts}</p>
-              </div>
-            </FadeContent>
+            {/* Summary Cards */}
+            <div className="flex flex-nowrap justify-center gap-6 mb-6">
+              <FadeContent
+                blur={false}
+                duration={1000}
+                easing="ease-out"
+                initialOpacity={0}
+              >
+                <div className="bg-[#E0EDF9] border border-[#A2CBEE] text-center py-6 mx-6 rounded w-[190px] sm:w-[260px] md:w-[330px] lg:w-[450px]">
+                  <p className="text-xl">Total Receipt</p>
+                  <p className="text-2xl font-bold">{totalReceipts}</p>
+                </div>
+              </FadeContent>
 
-            <FadeContent
-              blur={false}
-              duration={1000}
-              easing="ease-out"
-              initialOpacity={0}
-              delay={0}
-            >
-              <div className="bg-[#E0EDF9] border border-[#A2CBEE] text-center py-6 mx-6 rounded w-[190px] sm:w-[260px] md:w-[330px] lg:w-[450px]">
-                <p className="text-xl">Total Amount Spent</p>
-                <p className="text-2xl font-bold">
-                  RM {totalAmount.toFixed(2)}
-                </p>
-              </div>
-            </FadeContent>
-          </div>
+              <FadeContent
+                blur={false}
+                duration={1000}
+                easing="ease-out"
+                initialOpacity={0}
+                delay={0}
+              >
+                <div className="bg-[#E0EDF9] border border-[#A2CBEE] text-center py-6 mx-6 rounded w-[190px] sm:w-[260px] md:w-[330px] lg:w-[450px]">
+                  <p className="text-xl">Total Amount Spent</p>
+                  <p className="text-2xl font-bold">
+                    RM {totalAmount.toFixed(2)}
+                  </p>
+                </div>
+              </FadeContent>
+            </div>
 
-          {/* Receipt Table */}
-          <div className="bg-transparent rounded flex-1 flex flex-col">
-            <DataTable columns={columns} data={receipts} />
+            {/* Receipt Table */}
+            <div className="bg-transparent rounded flex-1 flex flex-col">
+              <DataTable
+                columns={createColumns({
+                  onDeleteClick: handleDeleteClick,
+                  from: "receipt_management",
+                })}
+                data={receipts}
+              />
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Global AlertDialog */}
+        <AlertDialog
+          open={!!receiptToDelete}
+          onOpenChange={() => setReceiptToDelete(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-black">
+                Delete this receipt?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This will mark the receipt as deleted. You can still recover it
+                later if needed.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel
+                className="cursor-pointer text-black border-gray-300"
+                onClick={() => setReceiptToDelete(null)}
+              >
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="cursor-pointer bg-red-600 text-white hover:bg-red-700"
+                onClick={confirmDelete}
+              >
+                Yes, Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Loading */}
+        {loading && <Loading />}
+      </>
     </ProtectedRoute>
   );
 }

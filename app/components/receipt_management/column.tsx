@@ -1,9 +1,13 @@
 "use client";
 
+// React Router
+import { useNavigate } from "react-router";
+
 import type { ColumnDef } from "@tanstack/react-table";
+
+// UI components
 import { MoreHorizontal } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
-import { useNavigate } from "react-router";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -27,7 +31,15 @@ export type Receipt = {
   amount: string;
 };
 
-export const columns: ColumnDef<Receipt>[] = [
+export const createColumns = ({
+  onDeleteClick,
+  onRestoreClick,
+  from,
+}: {
+  onDeleteClick: (receipt: Receipt) => void;
+  onRestoreClick?: (receipt: Receipt) => void;
+  from: string | null;
+}): ColumnDef<Receipt>[] => [
   {
     accessorKey: "vendor",
     header: ({ column }) => {
@@ -133,37 +145,77 @@ export const columns: ColumnDef<Receipt>[] = [
       const receipt = row.original;
       const navigate = useNavigate();
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className="cursor-pointer">
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(receipt.vendor)}
-              className="cursor-pointer"
-            >
-              Copy Receipt ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() =>
-                navigate(`/receipt_management/receipt_edit/${receipt.id}`)
-              }
-            >
-              Edit Receipt Details
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              Delete Receipt
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      if (from === "receipt_management") {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="cursor-pointer">
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(receipt.id)}
+                className="cursor-pointer"
+              >
+                Copy Receipt ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() =>
+                  navigate(`/receipt_management/receipt_edit/${receipt.id}`)
+                }
+              >
+                View/Edit Receipt Details
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer text-red-700 focus:text-red-700"
+                onClick={() => onDeleteClick(receipt)}
+              >
+                Delete Receipt
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      }
+
+      if (from === "receipt_deleted") {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="cursor-pointer">
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(receipt.id)}
+                className="cursor-pointer"
+              >
+                Copy Receipt ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => onRestoreClick?.(receipt)} // implement restore logic here
+              >
+                Restore Receipt
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer text-red-700 focus:text-red-700"
+                onClick={() => onDeleteClick(receipt)}
+              >
+                Permanently Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      }
     },
   },
 ];

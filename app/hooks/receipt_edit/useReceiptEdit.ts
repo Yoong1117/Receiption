@@ -17,6 +17,7 @@ export function useReceiptEdit(receiptId?: string) {
   const [remark, setRemark] = useState("");
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,10 +26,30 @@ export function useReceiptEdit(receiptId?: string) {
     const canUpload = vendor && amount && selectedPayment && selectedCategory;
 
     if (!canUpload) {
-      throw new Error("Missing required fields");
+      toast.error(
+        React.createElement(
+          "span",
+          { className: "text-red-600 font-semibold" },
+          "Update failed"
+        ),
+        {
+          description: React.createElement(
+            "span",
+            { className: "text-gray-600" },
+            "Missing required field."
+          ),
+
+          style: {
+            border: "1px solid #dc2626", // Tailwind red-600
+          },
+        }
+      );
+
+      return;
     }
 
     try {
+      setLoading(true);
       // Get the parsed_receipts row for this receipt
       const { data: parsedRows, error: fetchError } = await supabase
         .from("parsed_receipts")
@@ -52,6 +73,8 @@ export function useReceiptEdit(receiptId?: string) {
           remark,
         })
         .eq("id", parsedReceiptId);
+
+      setLoading(false);
 
       if (updateError) throw updateError;
 
@@ -99,7 +122,7 @@ export function useReceiptEdit(receiptId?: string) {
           ),
 
           style: {
-            border: "2px solid #16a34a", // Tailwind green-600
+            border: "1px solid #16a34a", // Tailwind green-600
           },
         }
       );
@@ -120,7 +143,7 @@ export function useReceiptEdit(receiptId?: string) {
           ),
 
           style: {
-            border: "2px solid #dc2626", // Tailwind green-600
+            border: "1px solid #dc2626", // Tailwind green-600
           },
         }
       );
@@ -138,6 +161,7 @@ export function useReceiptEdit(receiptId?: string) {
     remark,
     paymentOpen,
     categoryOpen,
+    loading,
     // Setters
     setVendor,
     setDate,

@@ -15,6 +15,11 @@ import ReceiptDetailsForm from "~/components/receipt_upload/ReceiptDetails";
 
 // Receipt upload
 import { useReceiptUpload } from "~/hooks/receipt_upload/useReceiptUpload";
+import Loading from "~/components/customLoading";
+
+export function meta({}: Route.MetaArgs) {
+  return [{ title: "Receipt Upload" }];
+}
 
 // Loader
 export async function loader() {
@@ -59,6 +64,7 @@ export default function UploadReceiptContent({
     paymentOpen,
     categoryOpen,
     showDropzone,
+    loading,
     // Setters
     setVendor,
     setDate,
@@ -82,7 +88,6 @@ export default function UploadReceiptContent({
         <div className="flex h-screen w-full overflow-hidden relative text-black">
           {/* Sidebar */}
           <AppSidebar />
-
           {/* Main Content */}
           <div className="flex flex-1 flex-col relative z-10">
             {/* Header */}
@@ -137,6 +142,8 @@ export default function UploadReceiptContent({
               </div>
             </main>
           </div>
+          {/* Loading */}
+          {loading && <Loading />}
         </div>
       </ProtectedRoute>
     </>

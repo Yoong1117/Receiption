@@ -33,6 +33,7 @@ import {
 
 import { Button } from "../ui/button";
 import { Input } from "~/components/ui/input";
+import type { Receipt } from "./column";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

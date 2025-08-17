@@ -237,7 +237,7 @@ export function extractCategory(text: string) {
 
 export function extractPaymentMethod(text: string) {
   const PAYMENT_PATTERNS: Record<string, RegExp> = {
-    tng: /\b(touch[ -]?n[ -]?go|tng|tngo|touchngo)\b/i,
+    tng: /\b(touch[ -]?n[ -]?go|tng|tngo|touchngo|tngewallet)\b/i,
     grabpay: /\b(grabpay|grab pay|paid with grab)\b/i,
     shopeepay: /\b(shopeepay|shopee pay|paid with shopee)\b/i,
     card: /\b(credit card|debit card|visa|mastercard|amex|american express)\b/i,

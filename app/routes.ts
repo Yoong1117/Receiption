@@ -7,6 +7,7 @@ export default [
   route("receipt_management", "routes/pages/receipt_management.tsx"),
   route("receipt_management/receipt_edit/:id", "routes/pages/receipt_edit.tsx"),
   route("receipt_upload", "routes/pages/receipt_upload.tsx"),
+  route("receipt_deleted", "routes/pages/receipt_deleted.tsx"),
   route("*", "routes/pages/not_found.tsx"),
 
   // API

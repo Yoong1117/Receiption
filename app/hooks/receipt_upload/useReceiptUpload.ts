@@ -59,6 +59,8 @@ export function useReceiptUpload() {
   const [hasUploaded, setHasUploaded] = useState(false);
   const [showDropzone, setShowDropzone] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,22 +70,29 @@ export function useReceiptUpload() {
   }, []);
 
   // Handles selecting a file via input
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+
     if (e.target.files && e.target.files.length > 0) {
       const uploadedFile = e.target.files[0];
-      processFile(uploadedFile);
+      await processFile(uploadedFile);
     }
     setShowDropzone(false);
+
+    setLoading(false);
   };
 
   // Handles dropping a file
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setLoading(true);
+
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
-      processFile(files[0]);
+      await processFile(files[0]);
     }
     setShowDropzone(false);
+    setLoading(false);
   };
 
   // Processes the file: sets state, runs OCR, parses text
@@ -92,6 +101,12 @@ export function useReceiptUpload() {
     setHasUploaded(false);
 
     const { rawText } = await runOCR(uploadedFile);
+
+    if (!rawText?.trim()) {
+      toast.error("OCR failed. Try uploading a clearer photo.");
+      return;
+    }
+
     setRawText(rawText);
 
     const text = preprocess(rawText);
@@ -109,6 +124,7 @@ export function useReceiptUpload() {
       file &&
       rawText &&
       vendor &&
+      date &&
       amount &&
       selectedPayment &&
       selectedCategory &&
@@ -116,15 +132,35 @@ export function useReceiptUpload() {
       !hasUploaded;
 
     if (!canUpload) {
-      throw new Error("Missing required fields or already uploaded.");
+      toast.error(
+        React.createElement(
+          "span",
+          { className: "text-red-600 font-semibold" },
+          "Upload failed"
+        ),
+        {
+          description: React.createElement(
+            "span",
+            { className: "text-gray-600" },
+            "Missing required field."
+          ),
+
+          style: {
+            border: "1px solid #dc2626", // Tailwind red-600
+          },
+        }
+      );
+
+      return;
     }
 
     setHasUploaded(true);
 
     try {
-      const imageUrl = await uploadImage(file!, userId!);
-      const receiptId = await insertReceipt(userId!, imageUrl, rawText);
+      const imageUrl = await uploadImage(file, userId);
+      const receiptId = await insertReceipt(userId, imageUrl, rawText);
 
+      setLoading(true);
       await insertParsedReceipt(
         receiptId,
         vendor,
@@ -134,6 +170,7 @@ export function useReceiptUpload() {
         selectedCategory,
         remark
       );
+      setLoading(false);
 
       navigate("/receipt_management");
 
@@ -151,7 +188,7 @@ export function useReceiptUpload() {
           ),
 
           style: {
-            border: "2px solid #16a34a", // Tailwind green-600
+            border: "1px solid #16a34a", // Tailwind green-600
           },
         }
       );
@@ -160,7 +197,7 @@ export function useReceiptUpload() {
         React.createElement(
           "span",
           { className: "text-red-600 font-semibold" },
-          "Upload failed"
+          "Failed to add"
         ),
         {
           description: React.createElement(
@@ -170,12 +207,13 @@ export function useReceiptUpload() {
           ),
 
           style: {
-            border: "2px solid #dc2626", // Tailwind green-600
+            border: "1px solid #dc2626", // Tailwind green-600
           },
         }
       );
     }
   }
+
   return {
     // State
     file,
@@ -188,6 +226,7 @@ export function useReceiptUpload() {
     paymentOpen,
     categoryOpen,
     showDropzone,
+    loading,
     // Setters
     setVendor,
     setDate,
