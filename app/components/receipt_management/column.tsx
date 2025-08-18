@@ -3,13 +3,14 @@
 // React Router
 import { useNavigate } from "react-router";
 
+// TanStack Table
 import type { ColumnDef } from "@tanstack/react-table";
 
 // UI components
 import { MoreHorizontal } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
-
 import { Button } from "~/components/ui/button";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,8 +20,6 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type Receipt = {
   id: string;
   vendor: string;
@@ -145,77 +144,76 @@ export const createColumns = ({
       const receipt = row.original;
       const navigate = useNavigate();
 
-      if (from === "receipt_management") {
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild className="cursor-pointer">
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(receipt.id)}
-                className="cursor-pointer"
-              >
-                Copy Receipt ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() =>
-                  navigate(`/receipt_management/receipt_edit/${receipt.id}`)
-                }
-              >
-                View/Edit Receipt Details
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer text-red-700 focus:text-red-700"
-                onClick={() => onDeleteClick(receipt)}
-              >
-                Delete Receipt
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      }
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            asChild
+            className="cursor-pointer hover:bg-[#acc9dd]/20"
+          >
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="border border-gray-300 bg-[#F1F7FD] "
+          >
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-      if (from === "receipt_deleted") {
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild className="cursor-pointer">
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(receipt.id)}
-                className="cursor-pointer"
-              >
-                Copy Receipt ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => onRestoreClick?.(receipt)} // implement restore logic here
-              >
-                Restore Receipt
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer text-red-700 focus:text-red-700"
-                onClick={() => onDeleteClick(receipt)}
-              >
-                Permanently Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      }
+            {from === "receipt_management" && (
+              <>
+                <DropdownMenuItem
+                  onClick={() => navigator.clipboard.writeText(receipt.id)}
+                  className="cursor-pointer focus:bg-[#bed9eb4d] focus:bg-blue-100/50"
+                >
+                  Copy Receipt ID
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer focus:bg-blue-100/50"
+                  onClick={() =>
+                    navigate(`/receipt_management/receipt_edit/${receipt.id}`)
+                  }
+                >
+                  View/Edit Receipt Details
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer text-red-700 focus:text-red-700 focus:bg-blue-100/50"
+                  onClick={() => onDeleteClick(receipt)}
+                >
+                  Delete Receipt
+                </DropdownMenuItem>
+              </>
+            )}
+
+            {from === "receipt_deleted" && (
+              <>
+                {" "}
+                <DropdownMenuItem
+                  onClick={() => navigator.clipboard.writeText(receipt.id)}
+                  className="cursor-pointer focus:bg-blue-100/50"
+                >
+                  Copy Receipt ID
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer focus:bg-blue-100/50"
+                  onClick={() => onRestoreClick?.(receipt)} // implement restore logic here
+                >
+                  Restore Receipt
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer text-red-700 focus:text-red-700 focus:bg-blue-100/50"
+                  onClick={() => onDeleteClick(receipt)}
+                >
+                  Permanently Delete
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
     },
   },
 ];

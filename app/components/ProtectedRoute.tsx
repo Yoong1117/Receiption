@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import type { JSX } from "react";
 import { Navigate } from "react-router";
 import { userAuth } from "~/context/AuthContext";

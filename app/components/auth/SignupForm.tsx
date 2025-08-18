@@ -1,8 +1,8 @@
 // UI Components
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-
 import { Button } from "~/components/ui/button";
+
 import {
   Card,
   CardAction,
@@ -17,7 +17,9 @@ import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 
 // Icon
 import { CircleX } from "lucide-react";
-import useSignupForm from "~/hooks/auth/useSignupForm";
+
+// Hooks
+import useSignupForm from "~/hooks/auth/signupForm";
 
 interface SignupFormProps {
   onSwitch: () => void;

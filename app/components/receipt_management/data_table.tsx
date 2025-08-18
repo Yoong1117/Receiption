@@ -1,7 +1,9 @@
 "use client";
 
+// React
 import { useState } from "react";
 
+// TanStack Table
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -14,6 +16,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
+// UI Components
+import { Button } from "../ui/button";
+import { Input } from "~/components/ui/input";
 
 import {
   Table,
@@ -30,10 +36,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-
-import { Button } from "../ui/button";
-import { Input } from "~/components/ui/input";
-import type { Receipt } from "./column";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

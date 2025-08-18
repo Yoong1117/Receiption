@@ -1,8 +1,8 @@
-// UI Components
+// UI components
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-
 import { Button } from "~/components/ui/button";
+
 import {
   Card,
   CardAction,
@@ -18,7 +18,9 @@ import { Separator } from "~/components/ui/separator";
 
 // Icon
 import { CircleX } from "lucide-react";
-import useLoginForm from "~/hooks/auth/useLoginForm";
+
+// Hooks
+import useLoginForm from "~/hooks/auth/loginForm";
 
 interface LoginFormProps {
   onSwitch: () => void;

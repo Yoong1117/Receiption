@@ -258,7 +258,7 @@ export default function ReceiptDelete() {
             {/* Header Row */}
             <div className="flex mb-6 justify-between items-center">
               <div className="flex items-center">
-                <SidebarTrigger className="bg-gray-100 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
+                <SidebarTrigger className="bg-gray-100  hover:bg-[#315098]/50 hover:text-white border border-gray-400 cursor-pointer" />
                 <div className="pl-4">
                   <h1 className="text-lg font-semibold">Deleted Receipts</h1>
                 </div>

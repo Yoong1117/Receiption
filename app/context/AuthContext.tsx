@@ -1,6 +1,14 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+// React
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+
+// Supabase client
 import { supabase } from "~/supabase/supabaseClient";
-import type { ReactNode } from "react";
 
 interface AuthContextType {
   session: any;

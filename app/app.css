@@ -4,8 +4,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
@@ -18,17 +19,41 @@ body {
 }
 
 body {
-  background: 
-    radial-gradient(transparent 4px),
-    radial-gradient(transparent 4px),
-    linear-gradient(#F1F7FD 4px, transparent 0),
-    linear-gradient(45deg, transparent 74px, transparent 75px, #A2CBEE 75px, #A2CBEE 76px, transparent 77px, transparent 109px),
-    linear-gradient(-45deg, transparent 75px, transparent 76px, #A2CBEE 76px, #A2CBEE 77px, transparent 78px, transparent 109px),
-    #F1F7FD;
-  background-size: 109px 109px, 109px 109px,100% 6px, 109px 109px, 109px 109px;
-  background-position: 54px 55px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+  background:
+    radial-gradient(transparent 4px), radial-gradient(transparent 4px),
+    linear-gradient(#f1f7fd 4px, transparent 0),
+    linear-gradient(
+      45deg,
+      transparent 74px,
+      transparent 75px,
+      #a2cbee 75px,
+      #a2cbee 76px,
+      transparent 77px,
+      transparent 109px
+    ),
+    linear-gradient(
+      -45deg,
+      transparent 75px,
+      transparent 76px,
+      #a2cbee 76px,
+      #a2cbee 77px,
+      transparent 78px,
+      transparent 109px
+    ),
+    #f1f7fd;
+  background-size:
+    109px 109px,
+    109px 109px,
+    100% 6px,
+    109px 109px,
+    109px 109px;
+  background-position:
+    54px 55px,
+    0px 0px,
+    0px 0px,
+    0px 0px,
+    0px 0px;
 }
-
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -93,13 +118,13 @@ body {
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: rgb(237, 245, 252);
+  --sidebar: rgb(235, 246, 255);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.21 0.006 285.885);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: rgba(150, 150, 150, 0.1);
+  --sidebar-accent: rgba(172, 201, 221, 0.2);
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.80 0.004 286.32);
+  --sidebar-border: oklch(0.8 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
 }
 
@@ -137,7 +162,6 @@ body {
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-
 /* Autofill Fix */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -145,7 +169,7 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-text-fill-color: black !important; /* Make text visible */
   caret-color: black; /* Caret also visible */
-  
+
   /* Override background */
   box-shadow: 0 0 0px 1000px white inset !important;
   -webkit-box-shadow: 0 0 0px 1000px white inset !important;

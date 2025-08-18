@@ -30,7 +30,10 @@ import {
   CommandItem,
 } from "~/components/ui/command";
 
+// Icons
 import { ChevronsUpDown, Check } from "lucide-react";
+
+// Utility for Tailwind
 import { cn } from "~/lib/utils";
 
 interface Option {

@@ -1,3 +1,4 @@
+// Icons
 import {
   ChevronUp,
   Home,
@@ -6,6 +7,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+// UI components
 import {
   Sidebar,
   SidebarHeader,
@@ -42,7 +44,7 @@ import { Separator } from "./ui/separator";
 import { supabase } from "~/supabase/supabaseClient";
 import { useEffect, useState } from "react";
 // Hook
-import { useSignOut } from "~/hooks/useSignOut";
+import { useSignOut } from "~/hooks/signOut";
 
 export function AppSidebar() {
   const [username, setUsername] = useState<string>("User");
@@ -130,7 +132,7 @@ export function AppSidebar() {
       <SidebarFooter>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center w-full px-2 py-1 hover:bg-gray-200/70 rounded cursor-pointer">
+            <button className="flex items-center w-full px-2 py-1 hover:bg-[#acc9dd]/20 rounded cursor-pointer">
               <span className="flex items-center gap-2 px-1">
                 <CircleUserRound className="w-5 h-5" />
                 {username}
@@ -139,11 +141,11 @@ export function AppSidebar() {
             </button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent className="border border-gray-300">
+          <DropdownMenuContent className="border border-gray-300 bg-[#ebf6ff]">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="cursor-pointer"
+              className="cursor-pointer focus:bg-[#acc9dd]/20"
               onClick={handleSignOut}
             >
               Sign Out

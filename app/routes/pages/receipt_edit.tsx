@@ -3,7 +3,7 @@ import ReceiptDetailsForm from "~/components/receipt_upload/ReceiptDetails";
 import ProtectedRoute from "~/components/ProtectedRoute";
 import { AppSidebar } from "~/components/app_sidebar";
 import { SidebarTrigger } from "~/components/ui/sidebar";
-import { useReceiptEdit } from "~/hooks/receipt_edit/useReceiptEdit";
+import { useReceiptEdit } from "~/hooks/receipt_edit/editReceipt";
 import { supabase } from "~/supabase/supabaseClient";
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/receipt_edit";
@@ -118,7 +118,7 @@ export default function receipt_edit({ loaderData }: Route.ComponentProps) {
             <div className="flex flex-1 flex-col relative z-10">
               {/* Header */}
               <div className="flex m-6">
-                <SidebarTrigger className="bg-white/80 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
+                <SidebarTrigger className="bg-gray-100  hover:bg-[#315098]/50 hover:text-white border border-gray-400 cursor-pointer" />
                 <div className="justify-center items-center pl-4">
                   <h1 className="text-lg font-semibold">
                     Receipt Management - Edit

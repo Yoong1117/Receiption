@@ -14,7 +14,7 @@ import DropzoneModal from "~/components/receipt_upload/DropzoneModal";
 import ReceiptDetailsForm from "~/components/receipt_upload/ReceiptDetails";
 
 // Receipt upload
-import { useReceiptUpload } from "~/hooks/receipt_upload/useReceiptUpload";
+import { useReceiptUpload } from "~/hooks/receipt_upload/uploadReceipt";
 import Loading from "~/components/customLoading";
 
 export function meta({}: Route.MetaArgs) {
@@ -92,7 +92,7 @@ export default function UploadReceiptContent({
           <div className="flex flex-1 flex-col relative z-10">
             {/* Header */}
             <div className="flex m-6">
-              <SidebarTrigger className="bg-white/80 hover:bg-gray-400 hover:text-white border border-gray-400 cursor-pointer" />
+              <SidebarTrigger className="bg-gray-100 hover:bg-[#315098]/50 hover:text-white border border-gray-400 cursor-pointer" />
               <div className="justify-center items-center pl-4">
                 <h1 className="text-lg font-semibold">Upload Receipt</h1>
               </div>
