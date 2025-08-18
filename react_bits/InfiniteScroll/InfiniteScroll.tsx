@@ -2,8 +2,13 @@ import React, { useRef, useEffect } from "react";
 import type { ReactNode } from "react";
 // @ts-ignore
 import ObserverPkg from "gsap/Observer.js";
+// @ts-ignore
+import ScrollTriggerPkg from "gsap/ScrollTrigger.js";
+
 const { Observer } = ObserverPkg;
-gsap.registerPlugin(Observer);
+const { ScrollTrigger } = ScrollTriggerPkg;
+
+gsap.registerPlugin(Observer, ScrollTrigger);
 
 import "./InfiniteScroll.css";
 
