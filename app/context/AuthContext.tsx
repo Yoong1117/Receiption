@@ -13,6 +13,9 @@ import { supabase } from "~/supabase/supabaseClient";
 const supabaseUrl =
   import.meta.env.VITE_APP_URL || "https://receiptionv1.vercel.app";
 
+console.log("VITE_APP_URL:", import.meta.env.VITE_APP_URL);
+console.log("supabaseUrl:", supabaseUrl);
+
 interface AuthContextType {
   session: any;
   loading: boolean;
@@ -87,6 +90,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     success: boolean;
     data?: any;
   }> => {
+    console.log("Redirecting to:", `${supabaseUrl}/dashboard`);
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -99,6 +104,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       return { success: false, data: error.message };
     }
 
+    console.log("Google sign in data:", data);
     return { success: true, data };
   };
 
