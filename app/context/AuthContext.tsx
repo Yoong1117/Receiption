@@ -13,9 +13,6 @@ import { supabase } from "~/supabase/supabaseClient";
 const supabaseUrl =
   import.meta.env.VITE_APP_URL || "https://receiptionv1.vercel.app";
 
-console.log("VITE_APP_URL:", import.meta.env.VITE_APP_URL);
-console.log("supabaseUrl:", supabaseUrl);
-
 interface AuthContextType {
   session: any;
   loading: boolean;

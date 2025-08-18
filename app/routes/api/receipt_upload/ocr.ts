@@ -2,11 +2,16 @@
 import type { ActionFunctionArgs } from "react-router";
 import vision from "@google-cloud/vision";
 
-if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
-  throw new Error("Missing GOOGLE_APPLICATION_CREDENTIALS_JSON env variable");
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  throw new Error("Missing GOOGLE_APPLICATION_CREDENTIALS env variable");
 }
 
-const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+// Decode base64 first
+const credentials = JSON.parse(
+  Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS!, "base64").toString(
+    "utf-8"
+  )
+);
 
 const client = new vision.ImageAnnotatorClient({
   credentials: {

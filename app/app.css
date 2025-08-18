@@ -50,7 +50,9 @@ body {
     0px 0px,
     0px 0px,
     0px 0px;
+  background-repeat: repeat; /* Added to repeat the background */
 }
+
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
