@@ -1,9 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import type { ReactNode } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface AnimatedContentProps {
   children: ReactNode;
@@ -37,39 +33,54 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    if (typeof window === "undefined" || !ref.current) return;
 
-    const axis = direction === "horizontal" ? "x" : "y";
-    const offset = reverse ? -distance : distance;
-    const startPct = (1 - threshold) * 100;
+    let gsap: any;
+    let ScrollTrigger: any;
 
-    gsap.set(el, {
-      [axis]: offset,
-      scale,
-      opacity: animateOpacity ? initialOpacity : 1,
-    });
+    const init = async () => {
+      const gsapModule = await import("gsap");
+      const scrollTriggerModule = await import("gsap/ScrollTrigger");
+      gsap = gsapModule.gsap || gsapModule.default;
+      ScrollTrigger =
+        scrollTriggerModule.ScrollTrigger || scrollTriggerModule.default;
+      gsap.registerPlugin(ScrollTrigger);
 
-    gsap.to(el, {
-      [axis]: 0,
-      scale: 1,
-      opacity: 1,
-      duration,
-      ease,
-      delay,
-      onComplete,
-      scrollTrigger: {
-        trigger: el,
-        start: `top ${startPct}%`,
-        toggleActions: "play none none none",
-        once: true,
-      },
-    });
+      const el = ref.current;
+      const axis = direction === "horizontal" ? "x" : "y";
+      const offset = reverse ? -distance : distance;
+      const startPct = (1 - threshold) * 100;
 
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-      gsap.killTweensOf(el);
+      gsap.set(el, {
+        [axis]: offset,
+        scale,
+        opacity: animateOpacity ? initialOpacity : 1,
+      });
+
+      const tween = gsap.to(el, {
+        [axis]: 0,
+        scale: 1,
+        opacity: 1,
+        duration,
+        ease,
+        delay,
+        onComplete,
+        scrollTrigger: {
+          trigger: el,
+          start: `top ${startPct}%`,
+          toggleActions: "play none none none",
+          once: true,
+        },
+      });
+
+      return () => {
+        tween.kill();
+        ScrollTrigger.getAll().forEach((t: any) => t.kill());
+        gsap.killTweensOf(el);
+      };
     };
+
+    init();
   }, [
     distance,
     direction,
