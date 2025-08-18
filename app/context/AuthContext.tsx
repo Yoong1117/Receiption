@@ -87,7 +87,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${process.env.VITE_APP_URL}/dashboard`,
+        redirectTo: `${import.meta.env.VITE_APP_URL}/dashboard`,
       },
     });
 
