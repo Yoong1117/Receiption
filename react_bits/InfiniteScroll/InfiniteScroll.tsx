@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from "react";
 import type { ReactNode } from "react";
-import { gsap } from "gsap";
-import { Observer } from "gsap/Observer";
-import "./InfiniteScroll.css";
-
+// @ts-ignore
+import ObserverPkg from "gsap/Observer.js";
+const { Observer } = ObserverPkg;
 gsap.registerPlugin(Observer);
+
+import "./InfiniteScroll.css";
 
 interface InfiniteScrollItem {
   content: ReactNode;
@@ -74,13 +75,21 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
       target: container,
       type: "wheel,touch,pointer",
       preventDefault: true,
-      onPress: ({ target }) => {
+      onPress: ({ target }: { target: EventTarget }) => {
         (target as HTMLElement).style.cursor = "grabbing";
       },
-      onRelease: ({ target }) => {
+      onRelease: ({ target }: { target: EventTarget }) => {
         (target as HTMLElement).style.cursor = "grab";
       },
-      onChange: ({ deltaY, isDragging, event }) => {
+      onChange: ({
+        deltaY,
+        isDragging,
+        event,
+      }: {
+        deltaY: number;
+        isDragging: boolean;
+        event: { type: string };
+      }) => {
         const d = event.type === "wheel" ? -deltaY : deltaY;
         const distance = isDragging ? d * 5 : d * 10;
         divItems.forEach((child) => {
