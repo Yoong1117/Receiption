@@ -1,12 +1,9 @@
 import React, { useRef, useEffect } from "react";
 import type { ReactNode } from "react";
-// @ts-ignore
-import ObserverPkg from "gsap/Observer.js";
-// @ts-ignore
-import ScrollTriggerPkg from "gsap/ScrollTrigger.js";
 
-const { Observer } = ObserverPkg;
-const { ScrollTrigger } = ScrollTriggerPkg;
+import gsap from "gsap";
+import Observer from "gsap/Observer";
+import ScrollTrigger from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(Observer, ScrollTrigger);
 
