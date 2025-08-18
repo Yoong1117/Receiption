@@ -10,6 +10,9 @@ import React, {
 // Supabase client
 import { supabase } from "~/supabase/supabaseClient";
 
+const supabaseUrl =
+  import.meta.env.VITE_APP_URL || "https://receiptionv1.vercel.app";
+
 interface AuthContextType {
   session: any;
   loading: boolean;
@@ -87,7 +90,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${import.meta.env.VITE_APP_URL}/dashboard`,
+        redirectTo: `${supabaseUrl}/dashboard`,
       },
     });
 
