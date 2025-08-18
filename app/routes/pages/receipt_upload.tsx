@@ -85,7 +85,7 @@ export default function UploadReceiptContent({
     <>
       {" "}
       <ProtectedRoute>
-        <div className="flex h-screen w-full overflow-hidden relative text-black">
+        <div className="flex h-screen w-full relative text-black">
           {/* Sidebar */}
           <AppSidebar />
           {/* Main Content */}

@@ -89,7 +89,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="bg-[#F1F7FD]/30 w-full h-screen relative flex justify-center items-center overflow-hidden">
+    <div className="bg-[#F1F7FD]/30 w-full h-screen relative flex justify-center items-center">
       <div className="relative z-10 flex h-screen items-center justify-center w-full">
         <div
           className="flex min-h-[650px] w-full max-w-[1000px] items-center justify-center gap-8 px-4
