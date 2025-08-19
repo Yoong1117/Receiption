@@ -196,16 +196,18 @@ export default function ReceiptManagementContent() {
             </div>
 
             {/* Summary Cards */}
-            <div className="flex flex-nowrap justify-center gap-6 mb-6">
+            <div className="flex flex-wrap justify-center gap-6 mb-6">
               <FadeContent
                 blur={false}
                 duration={1000}
                 easing="ease-out"
                 initialOpacity={0}
               >
-                <div className="bg-[#E0EDF9] border border-[#A2CBEE] text-center py-6 mx-6 rounded w-[190px] sm:w-[260px] md:w-[330px] lg:w-[450px]">
-                  <p className="text-xl">Total Receipt</p>
-                  <p className="text-2xl font-bold">{totalReceipts}</p>
+                <div className="bg-[#E0EDF9] border border-[#A2CBEE] text-center py-6 rounded flex-1 min-w-[300px] max-w-[450px] px-4">
+                  <p className="text-lg sm:text-xl">Total Receipt</p>
+                  <p className="text-xl sm:text-2xl font-bold">
+                    {totalReceipts}
+                  </p>
                 </div>
               </FadeContent>
 
@@ -216,9 +218,9 @@ export default function ReceiptManagementContent() {
                 initialOpacity={0}
                 delay={0}
               >
-                <div className="bg-[#E0EDF9] border border-[#A2CBEE] text-center py-6 mx-6 rounded w-[190px] sm:w-[260px] md:w-[330px] lg:w-[450px]">
-                  <p className="text-xl">Total Amount Spent</p>
-                  <p className="text-2xl font-bold">
+                <div className="bg-[#E0EDF9] border border-[#A2CBEE] text-center py-6 rounded flex-1 min-w-[300px] max-w-[450px] px-4">
+                  <p className="text-lg sm:text-xl">Total Amount Spent</p>
+                  <p className="text-xl sm:text-2xl font-bold">
                     RM {totalAmount.toFixed(2)}
                   </p>
                 </div>

@@ -148,7 +148,7 @@ export const createColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger
             asChild
-            className="cursor-pointer hover:bg-[#acc9dd]/20"
+            className="cursor-pointer hover:bg-[#acc9dd]/10"
           >
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -157,7 +157,7 @@ export const createColumns = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="border border-gray-300 bg-[#F1F7FD] "
+            className="border border-blue-200 bg-[#F1F7FD] "
           >
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
@@ -165,13 +165,13 @@ export const createColumns = ({
               <>
                 <DropdownMenuItem
                   onClick={() => navigator.clipboard.writeText(receipt.id)}
-                  className="cursor-pointer focus:bg-[#bed9eb4d] focus:bg-blue-100/50"
+                  className="cursor-pointer focus:bg-[#bed9eb4d] focus:bg-blue-100/30"
                 >
                   Copy Receipt ID
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="cursor-pointer focus:bg-blue-100/50"
+                  className="cursor-pointer focus:bg-blue-100/30"
                   onClick={() =>
                     navigate(`/receipt_management/receipt_edit/${receipt.id}`)
                   }
@@ -179,7 +179,7 @@ export const createColumns = ({
                   View/Edit Receipt Details
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="cursor-pointer text-red-700 focus:text-red-700 focus:bg-blue-100/50"
+                  className="cursor-pointer text-red-700 focus:text-red-700 focus:bg-blue-100/30"
                   onClick={() => onDeleteClick(receipt)}
                 >
                   Delete Receipt
@@ -192,19 +192,19 @@ export const createColumns = ({
                 {" "}
                 <DropdownMenuItem
                   onClick={() => navigator.clipboard.writeText(receipt.id)}
-                  className="cursor-pointer focus:bg-blue-100/50"
+                  className="cursor-pointer focus:bg-blue-100/30"
                 >
                   Copy Receipt ID
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="cursor-pointer focus:bg-blue-100/50"
+                  className="cursor-pointer focus:bg-blue-100/30"
                   onClick={() => onRestoreClick?.(receipt)} // implement restore logic here
                 >
                   Restore Receipt
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="cursor-pointer text-red-700 focus:text-red-700 focus:bg-blue-100/50"
+                  className="cursor-pointer text-red-700 focus:text-red-700 focus:bg-blue-100/30"
                   onClick={() => onDeleteClick(receipt)}
                 >
                   Permanently Delete

@@ -70,8 +70,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center py-4 gap-4">
-        <div className="flex flex-col">
+      {/* Filters */}
+      <div className="flex flex-wrap gap-4 py-4 items-end">
+        <div className="flex flex-col w-full sm:w-[200px] md:w-[250px]">
           <label htmlFor="vendor-filter" className="text-sm font-medium mb-2">
             Vendor
           </label>
@@ -84,11 +85,11 @@ export function DataTable<TData, TValue>({
             onChange={(event) =>
               table.getColumn("vendor")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm bg-[#f8fbff]"
+            className="bg-[#f8fbff]"
           />
         </div>
 
-        <div className="flex flex-col ml-4">
+        <div className="flex flex-col w-full sm:w-[200px] md:w-[250px]">
           <label htmlFor="payment-filter" className="text-sm font-medium mb-2">
             Payment Method
           </label>
@@ -101,11 +102,11 @@ export function DataTable<TData, TValue>({
             onChange={(event) =>
               table.getColumn("payment")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm bg-[#f8fbff]"
+            className="bg-[#f8fbff]"
           />
         </div>
 
-        <div className="flex flex-col ml-4">
+        <div className="flex flex-col w-full sm:w-[200px] md:w-[250px]">
           <label htmlFor="category-filter" className="text-sm font-medium mb-2">
             Category
           </label>
@@ -118,25 +119,26 @@ export function DataTable<TData, TValue>({
             onChange={(event) =>
               table.getColumn("category")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm bg-[#f8fbff]"
+            className="bg-[#f8fbff]"
           />
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="ml-auto bg-black hover:bg-black/65 border border-gray-200 text-white hover:text-white cursor-pointer "
-            >
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
+        {/* Columns button wrapper */}
+        <div className="flex flex-col w-auto sm:w-auto sm:ml-auto">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto bg-black hover:bg-black/65 border border-gray-200 text-white hover:text-white cursor-pointer"
+              >
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="border-blue-200">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
                   <DropdownMenuCheckboxItem
                     key={column.id}
                     className="capitalize"
@@ -147,12 +149,13 @@ export function DataTable<TData, TValue>({
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
+      {/* Table contents */}
       <div className="bg-[#F1F7FD] overflow-hidden rounded-md border !border-blue-200 mt-4">
         <Table className="">
           <TableHeader className="bg-[#C8DFF5]">
@@ -208,11 +211,12 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
+      {/* Page pagination */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"
-          className="bg-[#4077D0] hover:bg-[#3763BE] border border-gray-200 text-white hover:text-white cursor-pointer"
+          className="bg-[#4077D0] hover:bg-[#3763BE] border border-blue-200 text-white hover:text-white cursor-pointer"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -221,7 +225,7 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          className="bg-[#4077D0] hover:bg-[#3763BE] border border-gray-200 text-white hover:text-white cursor-pointer"
+          className="bg-[#4077D0] hover:bg-[#3763BE] border border-blue-200 text-white hover:text-white cursor-pointer"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >

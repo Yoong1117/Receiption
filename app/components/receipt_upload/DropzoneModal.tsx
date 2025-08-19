@@ -26,7 +26,7 @@ export default function DropzoneModal({
           onDrop={onDrop}
         >
           <span className="font-medium text-gray-600">
-            Drag & Drop your receipts here
+            Drag & Drop your receipt here
           </span>
         </div>
 
@@ -37,13 +37,12 @@ export default function DropzoneModal({
             className="text-blue-600 hover:underline cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
           >
-            click here to select files
+            click here to select a file
           </span>
         </p>
 
         <input
           type="file"
-          multiple
           accept="image/*"
           ref={fileInputRef}
           className="hidden"

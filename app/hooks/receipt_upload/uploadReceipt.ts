@@ -74,10 +74,10 @@ export function useReceiptUpload() {
     setLoading(true);
 
     if (e.target.files && e.target.files.length > 0) {
+      setShowDropzone(false);
       const uploadedFile = e.target.files[0];
       await processFile(uploadedFile);
     }
-    setShowDropzone(false);
 
     setLoading(false);
   };
@@ -89,9 +89,9 @@ export function useReceiptUpload() {
 
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
+      setShowDropzone(false);
       await processFile(files[0]);
     }
-    setShowDropzone(false);
     setLoading(false);
   };
 

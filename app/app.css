@@ -15,6 +15,7 @@ body {
   color-scheme: light; /* Force light mode */
 }
 
+html,
 body {
   background:
     radial-gradient(transparent 4px), radial-gradient(transparent 4px),
@@ -50,7 +51,13 @@ body {
     0px 0px,
     0px 0px,
     0px 0px;
-  background-repeat: repeat; /* Added to repeat the background */
+    background-repeat:
+    repeat,
+    repeat,
+    repeat,
+    repeat,
+    repeat,
+    repeat;
 }
 
 
@@ -98,7 +105,7 @@ body {
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: rgb(243, 249, 255);
+  --popover: rgb(248, 251, 255);
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.21 0.006 285.885);
   --primary-foreground: oklch(0.985 0 0);
@@ -121,7 +128,7 @@ body {
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.21 0.006 285.885);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: rgba(172, 201, 221, 0.2);
+  --sidebar-accent:rgba(224, 237, 249, 0.7);
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.8 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
@@ -192,13 +199,7 @@ input[type="number"] {
   height: 8px;
 }
 
-/* Scrollbar Thumb */
-::-webkit-scrollbar-thumb {
-  background-color: rgb(90, 90, 90) /* Or any color */;
-  border-radius: 4px;
-}
 
-/* Scrollbar Track */
-::-webkit-scrollbar-track {
-  background: transparent;
+.recharts-surface{
+  outline: none;
 }

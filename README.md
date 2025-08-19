@@ -1,87 +1,51 @@
-# Welcome to React Router!
+## 🚀 Live Demo
 
-A modern, production-ready template for building full-stack React applications using React Router.
+🔗 [View the App on Vercel](https://receiptionv1.vercel.app/)
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## ✨ Features
 
-## Features
+### 👤 User Authentication
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- Secure login/signup with Google OAuth via Supabase
 
-## Getting Started
+### 📊 Dashboard
 
-### Installation
+- Year-to-date expense summary
+- Current month expense summary
+- Monthly expenses bar chart
+- Top 3 spending categories
 
-Install the dependencies:
+### 📤 Receipt Upload Page
 
-```bash
-npm install
-```
+- Upload receipt images (click-to-upload or drag & drop)
+- Store image and URL in Supabase
+- Display parsed receipt fields
+- Allow user to edit before saving
+- Confirm and save to database
 
-### Development
+### 🔍 OCR & Data Extraction
 
-Start the development server with HMR:
+- Extract raw text from receipts using Google Vision API (OCR)
+- Parse structured data with regex and autofill form fields:
+  - Vendor
+  - Date of purchase
+  - Total amount
+  - Payment method
+  - Category
+  - Remark
+- Store both raw and structured data
 
-```bash
-npm run dev
-```
+### 📁 Receipt Management Page
 
-Your application will be available at `http://localhost:5173`.
+- View, edit, and delete uploaded receipts
+- Search by:
+  - Vendor
+  - Payment method
+  - Category
+- Sort receipts in ascending/descending order
 
-## Building for Production
+### 🗑️ Deleted Receipt Page
 
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+- Sort & filter deleted receipts
+- View soft-deleted receipts
+- Restore or permanently delete receipts

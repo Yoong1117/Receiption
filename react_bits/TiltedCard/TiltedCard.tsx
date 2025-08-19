@@ -129,7 +129,7 @@ export default function TiltedCard({
         />
 
         {displayOverlayContent && overlayContent && (
-          <motion.div className="tilted-card-overlay px-1.5 w-full h-full">
+          <motion.div className="tilted-card-overlay px-0.5 w-full h-full">
             {overlayContent}
           </motion.div>
         )}

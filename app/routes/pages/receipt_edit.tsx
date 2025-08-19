@@ -110,7 +110,7 @@ export default function receipt_edit({ loaderData }: Route.ComponentProps) {
       {" "}
       <ProtectedRoute>
         <>
-          <div className="flex h-screen w-full overflow-hidden relative text-black">
+          <div className="flex h-screen w-full relative text-black">
             {/* Sidebar */}
             <AppSidebar />
 

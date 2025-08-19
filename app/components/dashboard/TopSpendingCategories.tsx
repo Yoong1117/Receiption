@@ -12,7 +12,7 @@ export default function TopSpendingCategories({
   return (
     <TiltedCard
       imageSrc="https://yzqirhxhflvzgseibsga.supabase.co/storage/v1/object/public/receipts/dashboard/top3categories.jpg"
-      containerHeight="300px"
+      containerHeight="100%"
       containerWidth="100%"
       imageHeight="100%"
       imageWidth="100%"
@@ -21,7 +21,7 @@ export default function TopSpendingCategories({
       showMobileWarning={false}
       displayOverlayContent={true}
       overlayContent={
-        <Card className="bg-[#E0EDF9]/90 w-full h-full p-6 border border-gray-500">
+        <Card className="overflow-hidden bg-[#E0EDF9]/90 w-full h-full pt-4 sm:pt-0 md:pt-2 lg:pt-4  border border-gray-500">
           <CardHeader>
             <CardTitle className="text-[28px] font-bold ">
               Top 3 Spending Categories

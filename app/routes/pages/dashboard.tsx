@@ -47,11 +47,11 @@ function DashboardContent() {
 
         {/* Dashboard Content */}
         <main
-          className="flex-1 w-full pl-6 pr-8 grid gap-8
-                 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 min-h-0 "
+          className="flex-1 w-full px-6 sm:mb-0 md:mb-4 lg:mb-6  grid gap-8
+                 grid-cols-1 sm:grid-cols-2 md:grid-cols-5 min-h-0 "
         >
           {/* Year-to-Date */}
-          <div className="col-span-2">
+          <div className="col-span-2 m-2 h-[300px]">
             <YtdSummaryCard
               total={ytdTotal}
               avg={avgPerMonth}
@@ -59,7 +59,7 @@ function DashboardContent() {
           </div>
 
           {/* Monthly Expense */}
-          <div className="col-span-2 lg:col-span-3">
+          <div className="col-span-2  m-2 md:col-span-3 h-[350px] sm:h-[300px]">
             <MonthlySummaryCard
               monthTotal={monthlyTotal}
               spent={highestSpent}
@@ -68,12 +68,12 @@ function DashboardContent() {
           </div>
 
           {/* Monthly Expense Trend*/}
-          <div className="col-span-2 lg:col-span-3 pb-8 ">
+          <div className="col-span-2 mx-2 md:col-span-3 lg:pb-8 h-[300px] sm:h-[330px]">
             <MonthlyExpenseTrend trend={monthlyTrend} />
           </div>
 
           {/* Top Spending Categories*/}
-          <div className="col-span-2 pb-8">
+          <div className="col-span-2 mx-2 lg:pb-8 h-[300px] sm:h-[330px]">
             <TopSpendingCategories categories={topCategories} />
           </div>
         </main>
