@@ -1,3 +1,7 @@
+## Documentation
+
+🔗 [Notion] (https://www.notion.so/Receiption-23d842a8485780cda253e01566c3dfb7?source=copy_link)
+
 ## 🚀 Live Demo
 
 🔗 [View the App on Vercel](https://receiptionv1.vercel.app/)
